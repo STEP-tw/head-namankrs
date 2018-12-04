@@ -1,6 +1,6 @@
 let {equal,deepEqual} = require('assert');
 let {getCharacters,
-  getLines} = require('../src/lib.js');
+  getLines,getContents} = require('../src/lib.js');
 
 describe('getCharacters',function(){
   it('should return an empty string when count is given as 0',function(){
@@ -25,7 +25,16 @@ describe('getLines',function(){
     equal(getLines(input,1),'there are');
   })
   it('should return whole string if specified count is more than the number of lines in string',function(){
-  let expectedOutput = 'there are\nfew fruits in \n the orchard.'
+    let expectedOutput = 'there are\nfew fruits in \n the orchard.'
     equal(getLines(input,10),expectedOutput);
+  })
+})
+
+describe('getContents',function(){
+  const readFile = function(fileName){
+    return 'hello world';
+  }
+  it('should return the contents of the file whose name is given',function(){
+    equal(getContents('some.js',readFile),'hello world')
   })
 })

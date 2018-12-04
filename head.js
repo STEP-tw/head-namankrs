@@ -1,3 +1,5 @@
+let readFile = require('fs').readFileSync;
+let {} = require('./src/lib.js');
 /* 
   Usage:
   node ./head.js file1
