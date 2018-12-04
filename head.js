@@ -1,5 +1,15 @@
 let readFile = require('fs').readFileSync;
-let {} = require('./src/lib.js');
+let {parseInputs,getContents,getLines} = require('./src/lib.js');
+
+const main = function(){
+  let inputs = process.argv;
+  let parsedInputs = parseInputs(inputs);
+  let contents = getContents(parsedInputs,readFile);
+  console.log(getLines(contents));
+}
+
+main();
+
 /* 
   Usage:
   node ./head.js file1
@@ -14,7 +24,7 @@ let {} = require('./src/lib.js');
   node ./head.js -c 5 file1
   node ./head.js -c5 file1 file2
   node ./head.js -c 5 file1 file2
-*/
+  */
 
 
 
