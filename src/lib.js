@@ -13,9 +13,14 @@ const mapper = function(fileReader,callback,count,file){
   return modifiedContents;
 }
 
+const getContents = function(fileReader,callback,count,files){
+  let callbackFunc = mapper.bind(null,fileReader,callback,count);
+  return files.map(callbackFunc).join('\n');
+}
 
 
 module.exports = {getCharacters,
   getLines,
-  mapper};
+  mapper,
+getContents};
 

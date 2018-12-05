@@ -1,6 +1,8 @@
 let {equal,deepEqual} = require('assert');
 let {getCharacters,
-  getLines,mapper} = require('../src/lib.js');
+  getLines,
+  mapper,
+getContents} = require('../src/lib.js');
 describe('getCharacters',function(){
   it('should return an empty string when count is given as 0',function(){
     equal(getCharacters('naman',0),'');
@@ -36,5 +38,14 @@ describe('mapper',function(){
     let expectedOutput = '==>hello world<==\nhello world';
     equal(mapper(fileReader,getLines,1,string),expectedOutput);
 
+  })
+})
+
+describe('getContents',function(){
+  it('should return the formatted content of an array of files',function(){
+    let fileReader = (x)=>x;
+    let files = ['hello','world']; 
+    let expectedOutput = '==>hello<==\nhello\n==>world<==\nworld';
+    equal(getContents(fileReader,getLines,1,files),expectedOutput);
   })
 })
