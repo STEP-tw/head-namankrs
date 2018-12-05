@@ -34,6 +34,20 @@ const parseInputs = function(inputs){
 }
 
 const head = function(reader,inputs){
+
+  if(inputs[0] == '-0')
+    return 'head: illegal line count -- 0'
+
+  if(!inputs[0].includes('-c') && !inputs[0].includes('-n') && isNaN(inputs[0])){
+    return `head: illegal option -- ${inputs[0][1]}
+usage: head [-n lines | -c bytes] [file ...]`
+  }
+
+  if(inputs[0] =='-n0' || inputs[0] == '-c0'){
+    let option = {'-n0':'line','-c0':'byte'}
+    return `head: illegal ${option[inputs[0]]} count -- 0`
+  }
+
   let parsedInputs = parseInputs(inputs);
   let {option,count,files} = parsedInputs;
   let process = {'-c':getCharacters,'-n':getLines};
