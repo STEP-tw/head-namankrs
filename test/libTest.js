@@ -2,7 +2,8 @@ let {equal,deepEqual} = require('assert');
 let {getCharacters,
   getLines,
   mapper,
-getContents} = require('../src/lib.js');
+  parseInputs,
+  getContents} = require('../src/lib.js');
 describe('getCharacters',function(){
   it('should return an empty string when count is given as 0',function(){
     equal(getCharacters('naman',0),'');
@@ -47,5 +48,14 @@ describe('getContents',function(){
     let files = ['hello','world']; 
     let expectedOutput = '==>hello<==\nhello\n==>world<==\nworld';
     equal(getContents(fileReader,getLines,1,files),expectedOutput);
+  })
+})
+
+describe('parseInputs',function(){
+  it('should return the default state when no option and count are provided',function(){
+    deepEqual(parseInputs(['head.js']),{option:'-n',count:'10',files:['head.js']});
+  })
+  it('should change the default when some states are given',function(){
+    deepEqual(parseInputs(['-n','5','hello','world']),{option:'-n',count:'5',files:['hello','world']});
   })
 })
