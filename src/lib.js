@@ -9,7 +9,7 @@ const getLines = function(string,count){
 const mapper = function(fileReader,callback,count,file){
   let contents = fileReader(file, "utf8");
   let modifiedContents = callback(contents,count);
-  modifiedContents = `==>${file}<==\n${modifiedContents}`
+  modifiedContents = `==> ${file} <==\n${modifiedContents}`
   return modifiedContents;
 }
 

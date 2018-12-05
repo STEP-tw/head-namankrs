@@ -62,6 +62,7 @@ describe('parseInputs',function(){
   it('should work when option and count are not seperated by space',function(){
     deepEqual(parseInputs(['-c5','hello','world']),{option:'-c',count:'5',files:['hello','world']});
   })
-   it('',function(){
+   it.skip('should take -n as default when only count is given',function(){
+     deepEqual(parseInputs(['-5','hello','world']),{option:'-n',count:'5',files:['hello','world']});
    })
 })
