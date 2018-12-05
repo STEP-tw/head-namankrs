@@ -19,8 +19,8 @@ const getContents = function(fileReader,callback,count,files){
 }
 
 const parseInputs = function(inputs){
-  let states = {option:'-n',count:'10',files:[inputs[0]]};
-  if(inputs.length>1){
+  let states = {option:'-n',count:'10',files:inputs.slice()};
+  if(inputs[0].includes('-n')||inputs[0].includes('-n')){
     states.option = inputs[0].split('').slice(0,2).join('');
     states.count = inputs[1];
     states.files = inputs.slice(2,inputs.length);
