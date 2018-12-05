@@ -1,11 +1,8 @@
 let readFile = require('fs').readFileSync;
-let {parseInputs,getContents,getLines} = require('./src/lib.js');
+let {getLines,getCharacters} = require('./src/lib.js');
 
 const main = function(){
   let inputs = process.argv;
-  let parsedInputs = parseInputs(inputs);
-  let contents = getContents(parsedInputs,readFile);
-  console.log(getLines(contents));
 }
 
 main();

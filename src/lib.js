@@ -6,13 +6,16 @@ const getLines = function(string,count=10){
   return string.split('\n').slice(0,count).join('\n');
 }
 
-const getContents = function(fileName,fileReader,encoding='utf8'){
-  return fileReader(fileName,encoding); 
+const mapper = function(fileReader,callback,count,file){
+  let contents = fileReader(file);
+  let modifiedContents = callback(contents,count);
+  modifiedContents = `==>${file}<==\n${modifiedContents}`
+  return modifiedContents;
 }
 
-const parseInputs = function(inputs){
-  return inputs[2];
-}
+
 
 module.exports = {getCharacters,
-  getLines,getContents,parseInputs};
+  getLines,
+  mapper};
+
