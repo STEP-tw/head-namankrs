@@ -20,10 +20,12 @@ const getContents = function(fileReader,callback,count,files){
 
 const parseInputs = function(inputs){
   let states = {option:'-n',count:'10',files:inputs.slice()};
-  if(inputs[0].includes('-n')||inputs[0].includes('-n')){
+
+  if(inputs[0].includes('-n')||inputs[0].includes('-c')){
     states.option = inputs[0].split('').slice(0,2).join('');
     states.count = inputs[1];
     states.files = inputs.slice(2,inputs.length);
+
     if(isNaN(inputs[1])){
       let length = inputs[0].length;
       states.count = inputs[0].split('').slice(2,length).join('');
