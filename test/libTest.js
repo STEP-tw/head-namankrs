@@ -57,5 +57,7 @@ describe('parseInputs',function(){
   })
   it('should change the default when some states are given',function(){
     deepEqual(parseInputs(['-n','5','hello','world']),{option:'-n',count:'5',files:['hello','world']});
+    deepEqual(parseInputs(['-c','5','hello','world']),{option:'-c',count:'5',files:['hello','world']});
+    deepEqual(parseInputs(['-c5','hello','world']),{option:'-c',count:'5',files:['hello','world']});
   })
 })

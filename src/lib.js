@@ -7,7 +7,7 @@ const getLines = function(string,count){
 }
 
 const mapper = function(fileReader,callback,count,file){
-  let contents = fileReader(file);
+  let contents = fileReader(file, "utf8");
   let modifiedContents = callback(contents,count);
   modifiedContents = `==>${file}<==\n${modifiedContents}`
   return modifiedContents;
@@ -33,9 +33,18 @@ const parseInputs = function(inputs){
   return states;
 }
 
+const head = function(reader,inputs){
+  let parsedInputs = parseInputs(inputs);
+  let {option,count,files} = parsedInputs;
+  let process = {'-c':getCharacters,'-n':getLines};
+  let callback = process[option];
+  console.log(callback);
+  return getContents(reader,callback,count,files);
+}
+
 module.exports = {getCharacters,
   getLines,
   mapper,
   getContents,
-parseInputs};
+parseInputs,head};
 
