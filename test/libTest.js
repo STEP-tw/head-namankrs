@@ -3,7 +3,8 @@ let {getCharacters,
   getLines,
   mapper,
   parseInputs,
-  getContents} = require('../src/lib.js');
+  getContents,
+head} = require('../src/lib.js');
 describe('getCharacters',function(){
   it('should return an empty string when count is given as 0',function(){
     equal(getCharacters('naman',0),'');
@@ -36,7 +37,7 @@ describe('mapper',function(){
   it('should return the formatted content of a single file',function(){
     let fileReader = (x)=>x;
     let string = 'hello world'
-    let expectedOutput = '==>hello world<==\nhello world';
+    let expectedOutput = '==> hello world <==\nhello world';
     equal(mapper(fileReader,getLines,1,string),expectedOutput);
 
   })
@@ -46,7 +47,7 @@ describe('getContents',function(){
   it('should return the formatted content of an array of files',function(){
     let fileReader = (x)=>x;
     let files = ['hello','world']; 
-    let expectedOutput = '==>hello<==\nhello\n==>world<==\nworld';
+    let expectedOutput = '==> hello <==\nhello\n==> world <==\nworld';
     deepEqual(getContents(fileReader,getLines,1,files),expectedOutput);
   })
 })
@@ -62,7 +63,20 @@ describe('parseInputs',function(){
   it('should work when option and count are not seperated by space',function(){
     deepEqual(parseInputs(['-c5','hello','world']),{option:'-c',count:'5',files:['hello','world']});
   })
-   it.skip('should take -n as default when only count is given',function(){
-     deepEqual(parseInputs(['-5','hello','world']),{option:'-n',count:'5',files:['hello','world']});
-   })
+  it('should take -n as default when only count is given',function(){
+    deepEqual(parseInputs(['-5','hello','world']),{option:'-n',count:'5',files:['hello','world']});
+  })
+})
+
+describe('head',function(){
+  it('should return 1 lines of text when option is -n and count is 1',function(){
+    let file = 'hello world'
+    let reader = (fileName)=>file;
+    deepEqual(head(reader,['-n','1',file]),file);
+  })
+  it('should return 5 characters of text when option is -c and count is 5',function(){
+    let file = 'hello world'
+    let reader = (fileName)=>file;
+    deepEqual(head(reader,['-c','5',file]),'hello');
+  })
 })
