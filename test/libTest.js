@@ -47,7 +47,7 @@ describe('getContents',function(){
     let fileReader = (x)=>x;
     let files = ['hello','world']; 
     let expectedOutput = '==>hello<==\nhello\n==>world<==\nworld';
-    equal(getContents(fileReader,getLines,1,files),expectedOutput);
+    deepEqual(getContents(fileReader,getLines,1,files),expectedOutput);
   })
 })
 
@@ -58,6 +58,10 @@ describe('parseInputs',function(){
   it('should change the default when some states are given',function(){
     deepEqual(parseInputs(['-n','5','hello','world']),{option:'-n',count:'5',files:['hello','world']});
     deepEqual(parseInputs(['-c','5','hello','world']),{option:'-c',count:'5',files:['hello','world']});
+  })
+  it('should work when option and count are not seperated by space',function(){
     deepEqual(parseInputs(['-c5','hello','world']),{option:'-c',count:'5',files:['hello','world']});
   })
+   it('',function(){
+   })
 })

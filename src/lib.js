@@ -40,12 +40,19 @@ const head = function(reader,inputs){
   let {option,count,files} = parsedInputs;
   let process = {'-c':getCharacters,'-n':getLines};
   let callback = process[option];
-  return getContents(reader,callback,count,files);
+  let contents = getContents(reader,callback,count,files);
+  if(files.length == 1){
+    contents = contents.split('\n');
+    contents.shift();
+    contents = contents.join('\n');
+  }
+  return contents; 
 }
 
 module.exports = {getCharacters,
   getLines,
   mapper,
   getContents,
-parseInputs,head};
+  parseInputs,
+  head};
 
