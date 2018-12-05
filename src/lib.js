@@ -38,7 +38,6 @@ const head = function(reader,inputs){
   let {option,count,files} = parsedInputs;
   let process = {'-c':getCharacters,'-n':getLines};
   let callback = process[option];
-  console.log(callback);
   return getContents(reader,callback,count,files);
 }
 
