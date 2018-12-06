@@ -6,19 +6,19 @@ const getLines = function(string,count){
   return string.split('\n').slice(0,count).join('\n');
 }
 
-const mapper = function(fs,callback,count,file){
+const modifyContents = function(fs,mapper,count,file){
   let modifiedContents = `head: ${file}: No such file or directory`;
   if(fs.existsSync(file)){
-  let contents = fs.readFileSync(file, "utf8");
-  modifiedContents = callback(contents,count);
-  modifiedContents = `==> ${file} <==\n${modifiedContents}`
+    let contents = fs.readFileSync(file, "utf8");
+    modifiedContents = mapper(contents,count);
+    modifiedContents = `==> ${file} <==\n${modifiedContents}`
   }
   return modifiedContents;
 }
 
-const getContents = function(fs,callback,count,files){
-  let callbackFunc = mapper.bind(null,fs,callback,count);
-  return files.map(callbackFunc).join('\n');
+const getContents = function(fs,mapper,count,files){
+  let callback = modifyContents.bind(null,fs,mapper,count);
+  return files.map(callback).join('\n');
 }
 
 const parseInputs = function(inputs){
@@ -36,6 +36,9 @@ const parseInputs = function(inputs){
   return states;
 }
 
+const isInputValid = function(input){
+}
+
 const head = function(fs,inputs){
 
   const isCountInvalid = (inputs[0] == '-0');
@@ -43,9 +46,9 @@ const head = function(fs,inputs){
     return 'head: illegal line count -- 0';
 
   const isOptionInvalid = (!inputs[0].includes('-c') &&
-                          !inputs[0].includes('-n') &&
-                          isNaN(inputs[0]) &&
-                          inputs[0][0] == '-');
+    !inputs[0].includes('-n') &&
+    isNaN(inputs[0]) &&
+    inputs[0][0] == '-');
   if(isOptionInvalid){
     return `head: illegal option -- ${inputs[0][1]}
 usage: head [-n lines | -c bytes] [file ...]`
@@ -65,12 +68,12 @@ usage: head [-n lines | -c bytes] [file ...]`
   let parsedInputs = parseInputs(inputs);
   let {option,count,files} = parsedInputs;
   let process = {'-c':getCharacters,'-n':getLines};
-  let callback = process[option];
-  let contents = getContents(fs,callback,count,files);
+  let mapper = process[option];
+  let contents = getContents(fs,mapper,count,files);
   if(files.length == 1){
     if(fs.existsSync(files[0])){
       contents = fs.readFileSync(files[0], "utf8");
-      contents =  callback(contents,count);
+      contents =  mapper(contents,count);
     }
   }
   return contents; 
@@ -78,7 +81,7 @@ usage: head [-n lines | -c bytes] [file ...]`
 
 module.exports = {getCharacters,
   getLines,
-  mapper,
+  modifyContents,
   getContents,
   parseInputs,
   head};

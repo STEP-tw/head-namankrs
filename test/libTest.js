@@ -1,7 +1,7 @@
 let {equal,deepEqual} = require('assert');
 let {getCharacters,
   getLines,
-  mapper,
+  modifyContents,
   parseInputs,
   getContents,
 head} = require('../src/lib.js');
@@ -33,14 +33,14 @@ describe('getLines',function(){
   })
 })
 
-describe('mapper',function(){
+describe('modifyContents',function(){
   it('should return the formatted content of a single file',function(){
     let readFileSync = (x)=>x;
     let existsSync = (x)=>true;
     let fs = {readFileSync,existsSync};
     let string = 'hello world'
     let expectedOutput = '==> hello world <==\nhello world';
-    equal(mapper(fs,getLines,1,string),expectedOutput);
+    equal(modifyContents(fs,getLines,1,string),expectedOutput);
   })
 })
 
