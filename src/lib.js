@@ -42,7 +42,11 @@ const head = function(fs,inputs){
   if(isCountInvalid)
     return 'head: illegal line count -- 0';
 
-  if(!inputs[0].includes('-c') && !inputs[0].includes('-n') && isNaN(inputs[0]) && inputs[0][0] == '-'){
+  const isOptionInvalid = (!inputs[0].includes('-c') &&
+                          !inputs[0].includes('-n') &&
+                          isNaN(inputs[0]) &&
+                          inputs[0][0] == '-');
+  if(isOptionInvalid){
     return `head: illegal option -- ${inputs[0][1]}
 usage: head [-n lines | -c bytes] [file ...]`
   }
@@ -58,9 +62,10 @@ usage: head [-n lines | -c bytes] [file ...]`
   let callback = process[option];
   let contents = getContents(fs,callback,count,files);
   if(files.length == 1){
-    contents = contents.split('\n');
-    contents.shift();
-    contents = contents.join('\n');
+    if(fs.existsSync(files[0])){
+      contents = fs.readFileSync(files[0], "utf8");
+      contents =  callback(contents,count);
+    }
   }
   return contents; 
 }

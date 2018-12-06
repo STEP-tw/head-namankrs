@@ -95,6 +95,8 @@ describe('head',function(){
     let expectedOutput2 = `head: illegal option -- h\nusage: head [-n lines | -c bytes] [file ...]`
     deepEqual(head(fs,['-v','5','head.js']),expectedOutput1);
     deepEqual(head(fs,['-hello','5','head.js']),expectedOutput2)
-
   })
+    it('should return a error message when count is given as 0',function(){
+      deepEqual(head(fs,['-n0','6','head.js']),'head: illegal line count -- 0')
+    })
 })
