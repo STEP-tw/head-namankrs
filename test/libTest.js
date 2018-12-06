@@ -99,4 +99,8 @@ describe('head',function(){
     it('should return a error message when count is given as 0',function(){
       deepEqual(head(fs,['-n0','6','head.js']),'head: illegal line count -- 0')
     })
+  it('should return a error message for alphanumeric count',function(){
+    let expectedOutput = 'head: illegal line count -- 3av' 
+    deepEqual(head(fs,['-n3av','head.js']),expectedOutput);
+  })
 })
