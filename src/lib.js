@@ -51,9 +51,9 @@ const head = function(fs,inputs){
 usage: head [-n lines | -c bytes] [file ...]`
   }
 
-  if(inputs[0] =='-n0' || inputs[0] == '-c0'){
-    let option = {'-n0':'line','-c0':'byte'}
-    return `head: illegal ${option[inputs[0]]} count -- 0`
+  if((isNaN(inputs[0].slice(2)) || inputs[0].slice(2) == '0') && (inputs[0].slice(0,2) =='-n'||inputs[0].slice(0,2) == '-c')){
+    let option = {'-n':'line','-c':'byte'}
+    return `head: illegal ${option[inputs[0].slice(0,2)]} count -- ${inputs[0].slice(2)}`
   }
 
   let parsedInputs = parseInputs(inputs);
