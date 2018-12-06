@@ -35,20 +35,23 @@ describe('getLines',function(){
 
 describe('mapper',function(){
   it('should return the formatted content of a single file',function(){
-    let fileReader = (x)=>x;
+    let readFileSync = (x)=>x;
+    let existsSync = (x)=>true;
+    let fs = {readFileSync,existsSync};
     let string = 'hello world'
     let expectedOutput = '==> hello world <==\nhello world';
-    equal(mapper(fileReader,getLines,1,string),expectedOutput);
-
+    equal(mapper(fs,getLines,1,string),expectedOutput);
   })
 })
 
 describe('getContents',function(){
   it('should return the formatted content of an array of files',function(){
-    let fileReader = (x)=>x;
+    let readFileSync = (x)=>x;
+    let existsSync = (x)=>true;
+    let fs = {readFileSync,existsSync};
     let files = ['hello','world']; 
     let expectedOutput = '==> hello <==\nhello\n==> world <==\nworld';
-    deepEqual(getContents(fileReader,getLines,1,files),expectedOutput);
+    deepEqual(getContents(fs,getLines,1,files),expectedOutput);
   })
 })
 
@@ -69,14 +72,16 @@ describe('parseInputs',function(){
 })
 
 describe('head',function(){
+  let readFileSync = (x)=>x;
+    let existsSync = (x)=>true;
+    let fs = {readFileSync,existsSync};
+
   it('should return 1 lines of text when option is -n and count is 1',function(){
     let file = 'hello world'
-    let reader = (fileName)=>file;
-    deepEqual(head(reader,['-n','1',file]),file);
+    deepEqual(head(fs,['-n','1',file]),file);
   })
   it('should return 5 characters of text when option is -c and count is 5',function(){
     let file = 'hello world'
-    let reader = (fileName)=>file;
-    deepEqual(head(reader,['-c','5',file]),'hello');
+    deepEqual(head(fs,['-c','5',file]),'hello');
   })
 })

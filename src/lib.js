@@ -6,15 +6,18 @@ const getLines = function(string,count){
   return string.split('\n').slice(0,count).join('\n');
 }
 
-const mapper = function(fileReader,callback,count,file){
-  let contents = fileReader(file, "utf8");
-  let modifiedContents = callback(contents,count);
+const mapper = function(fs,callback,count,file){
+  let modifiedContents = `head: ${file}: No such file or directory`;
+  if(fs.existsSync(file)){
+  let contents = fs.readFileSync(file, "utf8");
+  modifiedContents = callback(contents,count);
   modifiedContents = `==> ${file} <==\n${modifiedContents}`
+  }
   return modifiedContents;
 }
 
-const getContents = function(fileReader,callback,count,files){
-  let callbackFunc = mapper.bind(null,fileReader,callback,count);
+const getContents = function(fs,callback,count,files){
+  let callbackFunc = mapper.bind(null,fs,callback,count);
   return files.map(callbackFunc).join('\n');
 }
 
@@ -24,7 +27,7 @@ const parseInputs = function(inputs){
   if(inputs[0]=='-n'||inputs[0]=='-c'){
     states = {option:inputs[0],count:inputs[1],files:inputs.slice(2)}
   }
-  if(inputs[0][0]=='-'& inputs[0].length>2){
+  if(inputs[0][0]=='-' && inputs[0].length>2){
     states = {option:inputs[0].slice(0,2),count:inputs[0].slice(2),files:inputs.slice(1)}
   }
   if(parseInt(inputs[0])){
@@ -33,12 +36,12 @@ const parseInputs = function(inputs){
   return states;
 }
 
-const head = function(reader,inputs){
+const head = function(fs,inputs){
 
   if(inputs[0] == '-0')
     return 'head: illegal line count -- 0'
 
-  if(!inputs[0].includes('-c') && !inputs[0].includes('-n') && isNaN(inputs[0])){
+  if(!inputs[0].includes('-c') && !inputs[0].includes('-n') && isNaN(inputs[0]) && inputs[0].length<=2){
     return `head: illegal option -- ${inputs[0][1]}
 usage: head [-n lines | -c bytes] [file ...]`
   }
@@ -52,7 +55,7 @@ usage: head [-n lines | -c bytes] [file ...]`
   let {option,count,files} = parsedInputs;
   let process = {'-c':getCharacters,'-n':getLines};
   let callback = process[option];
-  let contents = getContents(reader,callback,count,files);
+  let contents = getContents(fs,callback,count,files);
   if(files.length == 1){
     contents = contents.split('\n');
     contents.shift();

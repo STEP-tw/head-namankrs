@@ -1,8 +1,8 @@
-let readFile = require('fs').readFileSync;
+let fs = require('fs');
 let {head} = require('./src/lib.js');
 
 const main = function(){
- console.log(head(readFile,process.argv.slice(2))); 
+ console.log(head(fs,process.argv.slice(2))); 
 }
 
 main();
