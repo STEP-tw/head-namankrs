@@ -73,15 +73,27 @@ describe('parseInputs',function(){
 
 describe('head',function(){
   let readFileSync = (x)=>x;
-    let existsSync = (x)=>true;
-    let fs = {readFileSync,existsSync};
+  let existsSync = (x)=>true;
+  let fs = {readFileSync,existsSync};
+  let file = 'hello world';
 
   it('should return 1 lines of text when option is -n and count is 1',function(){
-    let file = 'hello world'
     deepEqual(head(fs,['-n','1',file]),file);
   })
   it('should return 5 characters of text when option is -c and count is 5',function(){
-    let file = 'hello world'
     deepEqual(head(fs,['-c','5',file]),'hello');
+  })
+  it('should return first 10 lines when no option is given',function(){
+    deepEqual(head(fs,[file]),file);
+  })
+  it('should return error message when -0 is given as option',function(){
+    let expectedOutput = 'head: illegal line count -- 0'
+    deepEqual(head(fs,['-0','head.js']),expectedOutput);
+  })
+  it.skip('should return a error message when option is other than n or c',function(){
+    let expectedOutput = `head: illegal option -- v 
+usage: head [-n lines | -c bytes] [file ...]`
+
+    deepEqual(head(fs,['-v','5','head.js']),expectedOutput);
   })
 })
