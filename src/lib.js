@@ -56,6 +56,12 @@ usage: head [-n lines | -c bytes] [file ...]`
     return `head: illegal ${option[inputs[0].slice(0,2)]} count -- ${inputs[0].slice(2)}`
   }
 
+  if((inputs[0]=='-n'||inputs[0]=='-c') && (inputs[1]<1||isNaN(inputs[1]))){
+    let option = {'-n':'line','-c':'byte'}
+    return `head: illegal ${option[inputs[0]]} count -- ${inputs[1]}`;
+  }
+
+
   let parsedInputs = parseInputs(inputs);
   let {option,count,files} = parsedInputs;
   let process = {'-c':getCharacters,'-n':getLines};
