@@ -42,7 +42,7 @@ const head = function(fs,inputs){
   if(isCountInvalid)
     return 'head: illegal line count -- 0';
 
-  if(!inputs[0].includes('-c') && !inputs[0].includes('-n') && isNaN(inputs[0]) && inputs[0].length<=2){
+  if(!inputs[0].includes('-c') && !inputs[0].includes('-n') && isNaN(inputs[0]) && inputs[0][0] == '-'){
     return `head: illegal option -- ${inputs[0][1]}
 usage: head [-n lines | -c bytes] [file ...]`
   }

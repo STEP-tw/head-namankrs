@@ -90,10 +90,11 @@ describe('head',function(){
     let expectedOutput = 'head: illegal line count -- 0'
     deepEqual(head(fs,['-0','head.js']),expectedOutput);
   })
-  it.skip('should return a error message when option is other than n or c',function(){
-    let expectedOutput = `head: illegal option -- v 
-usage: head [-n lines | -c bytes] [file ...]`
+  it('should return a error message when option is other than n or c',function(){
+    let expectedOutput1 = `head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]`
+    let expectedOutput2 = `head: illegal option -- h\nusage: head [-n lines | -c bytes] [file ...]`
+    deepEqual(head(fs,['-v','5','head.js']),expectedOutput1);
+    deepEqual(head(fs,['-hello','5','head.js']),expectedOutput2)
 
-    deepEqual(head(fs,['-v','5','head.js']),expectedOutput);
   })
 })
