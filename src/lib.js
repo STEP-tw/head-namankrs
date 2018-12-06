@@ -36,35 +36,49 @@ const parseInputs = function(inputs){
   return states;
 }
 
-const isInputValid = function(input){
+const isInputInvalid = function(input){
+  let state = false;
+  let message = '';
+
+  const isCountInvalid = (input[0] == '-0');
+  if(isCountInvalid){
+    message = 'head: illegal line count -- 0';
+    state = true;
+  }
+
+  const isOptionInvalid = (!input[0].includes('-c') &&
+    !input[0].includes('-n') &&
+    isNaN(input[0]) &&
+    input[0][0] == '-');
+  if(isOptionInvalid){
+    message =  `head: illegal option -- ${input[0][1]}
+usage: head [-n lines | -c bytes] [file ...]`;
+    state = true;
+  }
+
+  const isCountZero = (isNaN(input[0].slice(2)) || input[0].slice(2) == '0') &&
+    (input[0].slice(0,2) =='-n'||input[0].slice(0,2) == '-c');
+  if(isCountZero){
+    let option = {'-n':'line','-c':'byte'};
+    message =  `head: illegal ${option[input[0].slice(0,2)]} count -- ${input[0].slice(2)}`
+    state = true;
+  }
+
+  const isCountAlphanumeric = (input[0]=='-n'||input[0]=='-c') && (input[1]<1||isNaN(input[1]));
+    if(isCountAlphanumeric){  
+    let option = {'-n':'line','-c':'byte'}
+    message =  `head: illegal ${option[input[0]]} count -- ${input[1]}`;
+    state = true;
+  }
+  return {state,message};
 }
 
 const head = function(fs,inputs){
+  let{state,message} = isInputInvalid(inputs);
 
-  const isCountInvalid = (inputs[0] == '-0');
-  if(isCountInvalid)
-    return 'head: illegal line count -- 0';
-
-  const isOptionInvalid = (!inputs[0].includes('-c') &&
-    !inputs[0].includes('-n') &&
-    isNaN(inputs[0]) &&
-    inputs[0][0] == '-');
-  if(isOptionInvalid){
-    return `head: illegal option -- ${inputs[0][1]}
-usage: head [-n lines | -c bytes] [file ...]`
-  }
-
-  if((isNaN(inputs[0].slice(2)) || inputs[0].slice(2) == '0') && (inputs[0].slice(0,2) =='-n'||inputs[0].slice(0,2) == '-c')){
-    let option = {'-n':'line','-c':'byte'}
-    return `head: illegal ${option[inputs[0].slice(0,2)]} count -- ${inputs[0].slice(2)}`
-  }
-
-  if((inputs[0]=='-n'||inputs[0]=='-c') && (inputs[1]<1||isNaN(inputs[1]))){
-    let option = {'-n':'line','-c':'byte'}
-    return `head: illegal ${option[inputs[0]]} count -- ${inputs[1]}`;
-  }
-
-
+  if(state)
+    return message;
+  
   let parsedInputs = parseInputs(inputs);
   let {option,count,files} = parsedInputs;
   let process = {'-c':getCharacters,'-n':getLines};
@@ -84,5 +98,6 @@ module.exports = {getCharacters,
   modifyContents,
   getContents,
   parseInputs,
+  isInputInvalid,
   head};
 

@@ -3,8 +3,10 @@ let {getCharacters,
   getLines,
   modifyContents,
   parseInputs,
+  isInputInvalid,
   getContents,
 head} = require('../src/lib.js');
+
 describe('getCharacters',function(){
   it('should return an empty string when count is given as 0',function(){
     equal(getCharacters('naman',0),'');
@@ -71,6 +73,29 @@ describe('parseInputs',function(){
   })
 })
 
+describe('isInputInvalid',function(){
+  it('should return error message when -0 is given as option',function(){
+    let expectedOutput = {message:'head: illegal line count -- 0',
+      state:true};
+    deepEqual(isInputInvalid(['-0','head.js']),expectedOutput);
+  });
+  it('should return a error message when option is other than n or c',function(){
+    let expectedOutput1 = {message:`head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]`,state:true};
+    let expectedOutput2 = {message:`head: illegal option -- h\nusage: head [-n lines | -c bytes] [file ...]`,state:true};
+    deepEqual(isInputInvalid(['-v','5','head.js']),expectedOutput1);
+    deepEqual(isInputInvalid(['-hello','5','head.js']),expectedOutput2);
+  })
+  it('should return a error message when count is given as 0',function(){
+let expectedOutput = {message:'head: illegal line count -- 0',state:true};
+    deepEqual(isInputInvalid(['-n0','6','head.js']),expectedOutput);
+  })
+  it('should return a error message for alphanumeric count',function(){
+    let expectedOutput = {message:'head: illegal line count -- 3av',state:true}; 
+    deepEqual(isInputInvalid(['-n3av','head.js']),expectedOutput);
+    deepEqual(isInputInvalid(['-n','3av','head.js']),expectedOutput);
+  })
+
+})
 describe('head',function(){
   let readFileSync = (x)=>x;
   let existsSync = (x)=>true;
