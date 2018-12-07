@@ -76,39 +76,55 @@ const hasOption = x => x == "-n" || x == "-c";
 const hasInvalidCount = x => x < 1 || isNaN(x);
 const isCountAlphanumeric = (x, y) => hasOption(x) && hasInvalidCount(y);
 
-const isInputInvalid = function(input) {
+const invalidCountError = function(){
+  return{message :"head: illegal line count -- 0",
+  state:true};
+}
+
+const invalidOptionError = function(input){
+  return{message:`head: illegal option -- ${input[1]}
+usage: head [-n lines | -c bytes] [file ...]`,
+    state:true};
+}
+
+const countZeroError = function(input){
+  let option = { "-n": "line", "-c": "byte" };
+  return{message:`head: illegal ${
+    option[input.slice(0, 2)]
+  } count -- ${input.slice(2)}`,
+    state:true};
+}
+
+const alphanumericCountError = function(option,count){
+  let types = { "-n": "line", "-c": "byte" };
+  return {message:`head: illegal ${types[option]} count -- ${count}`,
+  state:true};
+}
+
+const validateInput = function(input) {
   let state = false;
   let message = "";
 
   if (isCountInvalid(input[0])) {
-    message = "head: illegal line count -- 0";
-    state = true;
+    return invalidCountError();
   }
 
   if (isOptionInvalid(input[0])) {
-    message = `head: illegal option -- ${input[0][1]}
-usage: head [-n lines | -c bytes] [file ...]`;
-    state = true;
+    return invalidOptionError(input[0]);
   }
 
   if (isCountZero(input[0])) {
-    let option = { "-n": "line", "-c": "byte" };
-    message = `head: illegal ${
-      option[input[0].slice(0, 2)]
-    } count -- ${input[0].slice(2)}`;
-    state = true;
+    return countZeroError(input[0]);
   }
 
   if (isCountAlphanumeric(input[0], input[1])) {
-    let option = { "-n": "line", "-c": "byte" };
-    message = `head: illegal ${option[input[0]]} count -- ${input[1]}`;
-    state = true;
+    return alphanumericCountError(input[0],input[1]);
   }
   return { state, message };
 };
 
 const head = function(fs, inputs) {
-  let { state, message } = isInputInvalid(inputs);
+  let { state, message } = validateInput(inputs);
 
   if (state) return message;
 
@@ -132,6 +148,6 @@ module.exports = {
   modifyContents,
   getContents,
   parseInputs,
-  isInputInvalid,
+  validateInput,
   head
 };
