@@ -25,7 +25,9 @@ const getContents = function(fs, mapper, count, files) {
 };
 
 const isOptionValid = x => x == "-n" || x == "-c";
+
 const isOptionAndCount = x => x[0] == "-" && x.length > 2;
+
 const isCountValid = x => !isNaN(x);
 
 const parseOptionInput = function(inputs) {
@@ -66,14 +68,23 @@ const parseInputs = function(inputs) {
 };
 
 const isCountInvalid = x => x == "-0";
+
 const lacksOption = x => !x.includes("-c") && !x.includes("-n");
+
 const isAlphanumeric = x => isNaN(x) && x[0] == "-";
+
 const isOptionInvalid = x => lacksOption(x) && isAlphanumeric(x);
+
 const isAlphabetOrZero = x => isNaN(x.slice(2)) || x.slice(2) == "0";
+
 const isValidOption = x => x.slice(0, 2) == "-n" || x.slice(0, 2) == "-c";
+
 const isCountZero = x => isAlphabetOrZero(x) && isValidOption(x);
+
 const hasOption = x => x == "-n" || x == "-c";
+
 const hasInvalidCount = x => x < 1 || isNaN(x);
+
 const isCountAlphanumeric = (x, y) => hasOption(x) && hasInvalidCount(y);
 
 const invalidCountError = function() {
