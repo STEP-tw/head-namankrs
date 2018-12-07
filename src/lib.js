@@ -26,29 +26,41 @@ const getContents = function(fs, mapper, count, files) {
 
 const isOptionValid = x => x == "-n" || x == "-c";
 const isOptionAndCount = x => x[0] == "-" && x.length > 2;
-const isValidCount = x => !isNaN(x);
+const isCountValid = x => !isNaN(x);
+
+const parseOptionInput = function(inputs) {
+  return { option: inputs[0], count: inputs[1], files: inputs.slice(2) };
+};
+
+const parseOptionAndCountInput = function(inputs) {
+  return {
+    option: inputs[0].slice(0, 2),
+    count: inputs[0].slice(2),
+    files: inputs.slice(1)
+  };
+};
+
+const parseCountInput = function(inputs) {
+  return {
+    option: "-n",
+    count: Math.abs(inputs[0]),
+    files: inputs.slice(1)
+  };
+};
 
 const parseInputs = function(inputs) {
   let states = { option: "-n", count: "10", files: inputs.slice() };
 
   if (isOptionValid(inputs[0])) {
-    states = { option: inputs[0], count: inputs[1], files: inputs.slice(2) };
+    return parseOptionInput(inputs);
   }
 
   if (isOptionAndCount(inputs[0])) {
-    states = {
-      option: inputs[0].slice(0, 2),
-      count: inputs[0].slice(2),
-      files: inputs.slice(1)
-    };
+    return parseOptionAndCountInput(inputs);
   }
 
-  if (isValidCount(inputs[0])) {
-    states = {
-      option: "-n",
-      count: Math.abs(inputs[0]),
-      files: inputs.slice(1)
-    };
+  if (isCountValid(inputs[0])) {
+    return parseCountInput(inputs);
   }
   return states;
 };

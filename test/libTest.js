@@ -153,7 +153,7 @@ describe("head", function() {
     deepEqual(head(fs, ["-n", "1", file, file]), expectedOutput);
   });
   it("should return an error message for single missing file", function() {
-    let existsSync = x => false;
+    let existsSync = (x) => false;
     let expectedOutput = "hello world";
     deepEqual(head(fs, ["-n", "1", file]), expectedOutput);
   });
