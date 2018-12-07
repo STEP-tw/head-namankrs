@@ -24,20 +24,26 @@ const getContents = function(fs, mapper, count, files) {
   return files.map(callback).join("\n");
 };
 
+const isOptionValid = x => x == "-n" || x == "-c";
+const isOptionAndCount = x => x[0] == "-" && x.length > 2;
+const isValidCount = x => !isNaN(x);
+
 const parseInputs = function(inputs) {
   let states = { option: "-n", count: "10", files: inputs.slice() };
 
-  if (inputs[0] == "-n" || inputs[0] == "-c") {
+  if (isOptionValid(inputs[0])) {
     states = { option: inputs[0], count: inputs[1], files: inputs.slice(2) };
   }
-  if (inputs[0][0] == "-" && inputs[0].length > 2) {
+
+  if (isOptionAndCount(inputs[0])) {
     states = {
       option: inputs[0].slice(0, 2),
       count: inputs[0].slice(2),
       files: inputs.slice(1)
     };
   }
-  if (parseInt(inputs[0])) {
+
+  if (isValidCount(inputs[0])) {
     states = {
       option: "-n",
       count: Math.abs(inputs[0]),
@@ -47,28 +53,32 @@ const parseInputs = function(inputs) {
   return states;
 };
 
+const isCountInvalid = x => x == "-0";
+const lacksOption = x => !x.includes("-c") && !x.includes("-n");
+const isAlphanumeric = x => isNaN(x) && x[0] == "-";
+const isOptionInvalid = x => lacksOption(x) && isAlphanumeric(x);
+const isAlphabetOrZero = x => isNaN(x.slice(2)) || x.slice(2) == "0";
+const isValidOption = x => x.slice(0, 2) == "-n" || x.slice(0, 2) == "-c";
+const isCountZero = x => isAlphabetOrZero(x) && isValidOption(x);
+const hasOption = x => x == "-n" || x == "-c";
+const hasInvalidCount = x => x < 1 || isNaN(x);
+const isCountAlphanumeric = (x, y) => hasOption(x) && hasInvalidCount(y);
+
 const isInputInvalid = function(input) {
   let state = false;
   let message = "";
 
-  const isCountInvalid = x => x == "-0";
   if (isCountInvalid(input[0])) {
     message = "head: illegal line count -- 0";
     state = true;
   }
 
-  const lacksOption = x => !x.includes("-c") && !x.includes("-n");
-  const isAlphanumeric = x => isNaN(x) && x[0] == "-";
-  const isOptionInvalid = x => lacksOption(x) && isAlphanumeric(x);
   if (isOptionInvalid(input[0])) {
     message = `head: illegal option -- ${input[0][1]}
 usage: head [-n lines | -c bytes] [file ...]`;
     state = true;
   }
 
-  const isAlphabetOrZero = x => isNaN(x.slice(2)) || x.slice(2) == "0";
-  const isValidOption = x => x.slice(0, 2) == "-n" || x.slice(0, 2) == "-c";
-  const isCountZero = x => isAlphabetOrZero(x) && isValidOption(x);
   if (isCountZero(input[0])) {
     let option = { "-n": "line", "-c": "byte" };
     message = `head: illegal ${
@@ -77,9 +87,6 @@ usage: head [-n lines | -c bytes] [file ...]`;
     state = true;
   }
 
-  const hasOption = x => x == "-n" || x == "-c";
-  const hasInvalidCount = x => x < 1 || isNaN(x);
-  const isCountAlphanumeric = (x, y) => hasOption(x) && hasInvalidCount(y);
   if (isCountAlphanumeric(input[0], input[1])) {
     let option = { "-n": "line", "-c": "byte" };
     message = `head: illegal ${option[input[0]]} count -- ${input[1]}`;
