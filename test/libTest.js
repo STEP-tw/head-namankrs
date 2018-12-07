@@ -44,6 +44,14 @@ describe('modifyContents',function(){
     let expectedOutput = '==> hello world <==\nhello world';
     equal(modifyContents(fs,getLines,1,string),expectedOutput);
   })
+  it('should return the error message if file does not exist',function(){
+    let readFileSync = (x)=>x;
+    let existsSync = (x)=>false;
+    let fs = {readFileSync,existsSync};
+    let string = 'hello world';
+    let expectedOutput = 'head: hello world: No such file or directory';
+    equal(modifyContents(fs,getLines,1,string),expectedOutput);
+  })
 })
 
 describe('getContents',function(){
@@ -103,7 +111,9 @@ describe('head',function(){
   let file = 'hello world';
 
   it('should return 1 lines of text when option is -n and count is 1',function(){
+    let expectedOutput = '==> hello world <==\nhello world\n==> hello world <==\nhello world'
     deepEqual(head(fs,['-n','1',file]),file);
+    deepEqual(head(fs,['-n','1',file,file]),expectedOutput);
   })
   it('should return 5 characters of text when option is -c and count is 5',function(){
     deepEqual(head(fs,['-c','5',file]),'hello');
