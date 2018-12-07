@@ -76,30 +76,35 @@ const hasOption = x => x == "-n" || x == "-c";
 const hasInvalidCount = x => x < 1 || isNaN(x);
 const isCountAlphanumeric = (x, y) => hasOption(x) && hasInvalidCount(y);
 
-const invalidCountError = function(){
-  return{message :"head: illegal line count -- 0",
-  state:true};
-}
+const invalidCountError = function() {
+  return { message: "head: illegal line count -- 0", state: true };
+};
 
-const invalidOptionError = function(input){
-  return{message:`head: illegal option -- ${input[1]}
+const invalidOptionError = function(input) {
+  return {
+    message: `head: illegal option -- ${input[1]}
 usage: head [-n lines | -c bytes] [file ...]`,
-    state:true};
-}
+    state: true
+  };
+};
 
-const countZeroError = function(input){
+const countZeroError = function(input) {
   let option = { "-n": "line", "-c": "byte" };
-  return{message:`head: illegal ${
-    option[input.slice(0, 2)]
-  } count -- ${input.slice(2)}`,
-    state:true};
-}
+  return {
+    message: `head: illegal ${option[input.slice(0, 2)]} count -- ${input.slice(
+      2
+    )}`,
+    state: true
+  };
+};
 
-const alphanumericCountError = function(option,count){
+const alphanumericCountError = function(option, count) {
   let types = { "-n": "line", "-c": "byte" };
-  return {message:`head: illegal ${types[option]} count -- ${count}`,
-  state:true};
-}
+  return {
+    message: `head: illegal ${types[option]} count -- ${count}`,
+    state: true
+  };
+};
 
 const validateInput = function(input) {
   let state = false;
@@ -118,7 +123,7 @@ const validateInput = function(input) {
   }
 
   if (isCountAlphanumeric(input[0], input[1])) {
-    return alphanumericCountError(input[0],input[1]);
+    return alphanumericCountError(input[0], input[1]);
   }
   return { state, message };
 };
