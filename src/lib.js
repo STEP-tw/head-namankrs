@@ -149,11 +149,12 @@ const head = function(fs, inputs) {
   let process = { "-c": getCharacters, "-n": getLines };
   let mapper = process[option];
   let contents = getContents(fs, mapper, count, files);
-  if (files.length == 1) {
-    if (fs.existsSync(files[0])) {
-      contents = fs.readFileSync(files[0], "utf8");
-      contents = mapper(contents, count);
-    }
+  if (files.length > 1) 
+    return contents;
+
+  if (fs.existsSync(files[0])) {
+    contents = fs.readFileSync(files[0], "utf8");
+    contents = mapper(contents, count);
   }
   return contents;
 };
