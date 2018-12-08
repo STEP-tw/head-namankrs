@@ -3,10 +3,8 @@ const getCharacters = function(string, count) {
 };
 
 const getLines = function(string, count) {
-  return string
-    .split("\n")
-    .slice(0, count)
-    .join("\n");
+  let lines = string.split("\n");
+  return lines.slice(0, count).join("\n");
 };
 
 const modifyContents = function(fs, mapper, count, file) {
