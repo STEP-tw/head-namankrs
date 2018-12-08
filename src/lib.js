@@ -140,17 +140,19 @@ const validateInput = function(input) {
 };
 
 const head = function(fs, inputs) {
-  let { errorState, message } = validateInput(inputs);
-
-  if (errorState) return message;
-
-  let parsedInputs = parseInputs(inputs);
-  let { option, count, files } = parsedInputs;
+  let { option, count, files } = parseInputs(inputs);
   let process = { "-c": getCharacters, "-n": getLines };
   let mapper = process[option];
   let contents = getContents(fs, mapper, count, files);
-  if (files.length > 1) 
-    return contents;
+  return { files, contents, count, mapper };
+};
+
+const runHead = function(fs, inputs) {
+  let { errorState, message } = validateInput(inputs);
+  if (errorState) return message;
+
+  let { files, contents, count, mapper } = head(fs, inputs);
+  if (files.length > 1) return contents;
 
   if (fs.existsSync(files[0])) {
     contents = fs.readFileSync(files[0], "utf8");
@@ -166,5 +168,5 @@ module.exports = {
   getContents,
   parseInputs,
   validateInput,
-  head
+  runHead
 };
