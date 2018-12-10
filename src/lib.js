@@ -1,10 +1,10 @@
-const getCharacters = function(string, endCount,initCount=0) {
-  return string.slice(initCount,endCount);
+const getCharacters = function(string, endCount, initCount = 0) {
+  return string.slice(initCount, endCount);
 };
 
-const getLines = function(string, endCount,initCount=0) {
+const getLines = function(string, endCount, initCount = 0) {
   let lines = string.split("\n");
-  return lines.slice(initCount,endCount).join("\n");
+  return lines.slice(initCount, endCount).join("\n");
 };
 
 const modifyContents = function(fs, mapper, count, file) {
@@ -161,18 +161,23 @@ const runHead = function(fs, inputs) {
 
 const formatContents = function(fs, mapper, count, file) {
   let formattedContents = `tail: ${file}: No such file or directory`;
-  if (fs.existsSync(file)){
+  if (fs.existsSync(file)) {
     let endCount = file.length;
     let initCount = endCount - count;
-    if(mapper == getLines){
-      endCount = file.split('\n').length;
-      initCount = endCount-count;
+    if (mapper == getLines) {
+      endCount = file.split("\n").length;
+      initCount = endCount - count;
     }
     let contents = fs.readFileSync(file, "utf8");
-    formattedContents = mapper(contents, endCount,initCount);
+    formattedContents = mapper(contents, endCount, initCount);
     formattedContents = `==> ${file} <==\n${formattedContents}`;
   }
   return formattedContents;
+};
+
+const formatAllContents = function(fs, mapper, count, files) {
+  let callback = formatContents.bind(null, fs, mapper, count);
+  return files.map(callback).join("\n");
 };
 
 module.exports = {
@@ -183,5 +188,6 @@ module.exports = {
   parseInputs,
   validateInput,
   runHead,
-    formatContents
+  formatContents,
+  formatAllContents
 };

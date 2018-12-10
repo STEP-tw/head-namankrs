@@ -7,7 +7,8 @@ let {
   validateInput,
   getContents,
   runHead,
-  formatContents
+  formatContents,
+  formatAllContents
 } = require("../src/lib.js");
 
 describe("getCharacters", function() {
@@ -193,7 +194,20 @@ describe("formatContents", function() {
     let existsSync = x => true;
     let fs = { readFileSync, existsSync };
     let file = "1\n2\n3\n4";
-    let expectedOutput = '==> 1\n2\n3\n4 <==\n3\n4';
-    deepEqual(formatContents(fs,getLines,2,file),expectedOutput);
+    let expectedOutput = "==> 1\n2\n3\n4 <==\n3\n4";
+    deepEqual(formatContents(fs, getLines, 2, file), expectedOutput);
+  });
+});
+
+describe("formatAllContents", function() {
+  let readFileSync = x => x;
+  let existsSync = x => true;
+  let fs = { readFileSync, existsSync };
+  let file1 = "1\n2\n3\n4";
+  let file2 = "5\n6\n7";
+  let files = [file1, file2];
+  let expectedOutput = '==> 1\n2\n3\n4 <==\n3\n4\n==> 5\n6\n7 <==\n6\n7';
+  it("should return the formatted contents of all the given files", function() {
+    deepEqual(formatAllContents(fs, getLines, 2, files), expectedOutput);
   });
 });
