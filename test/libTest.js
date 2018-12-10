@@ -8,7 +8,8 @@ let {
   getContents,
   runHead,
   formatContents,
-  formatAllContents
+  formatAllContents,
+  tail
 } = require("../src/lib.js");
 
 describe("getCharacters", function() {
@@ -189,13 +190,17 @@ describe("runHead", function() {
 });
 
 describe("formatContents", function() {
+  let readFileSync = x => x;
+  let existsSync = x => true;
+  let fs = { readFileSync, existsSync };
+  let file = "1\n2\n3\n4";
   it("should return the content of the file after adding header", function() {
-    let readFileSync = x => x;
-    let existsSync = x => true;
-    let fs = { readFileSync, existsSync };
-    let file = "1\n2\n3\n4";
     let expectedOutput = "==> 1\n2\n3\n4 <==\n3\n4";
     deepEqual(formatContents(fs, getLines, 2, file), expectedOutput);
+  });
+  it("should return the content of the file after adding header", function() {
+    let expectedOutput = "==> 1\n2\n3\n4 <==\n\n3\n4";
+    deepEqual(formatContents(fs, getCharacters,4, file), expectedOutput);
   });
 });
 
@@ -206,8 +211,30 @@ describe("formatAllContents", function() {
   let file1 = "1\n2\n3\n4";
   let file2 = "5\n6\n7";
   let files = [file1, file2];
-  let expectedOutput = '==> 1\n2\n3\n4 <==\n3\n4\n==> 5\n6\n7 <==\n6\n7';
+  let expectedOutput = "==> 1\n2\n3\n4 <==\n3\n4\n==> 5\n6\n7 <==\n6\n7";
   it("should return the formatted contents of all the given files", function() {
     deepEqual(formatAllContents(fs, getLines, 2, files), expectedOutput);
   });
+  it("should return the formatted contents of all the given files", function() {
+    let expectedOutput = '==> 1\n2\n3\n4 <==\n3\n4\n==> 5\n6\n7 <==\n6\n7';
+    deepEqual(formatAllContents(fs, getCharacters, 3, files), expectedOutput);
+  });
+});
+
+describe('tail',function(){
+  let readFileSync = x => x;
+  let existsSync = x => true;
+  let fs = { readFileSync, existsSync };
+  it('should return last two lines when option is n and count is 2',function(){
+    let file = '1\n2';
+    let inputs = ["-n", "2", file, file];
+    let expectedOutput = '==> 1\n2 <==\n1\n2\n==> 1\n2 <==\n1\n2';
+    deepEqual(tail(fs,inputs),expectedOutput);
+  });
+  it('should return last two characters when option is c and count is 2',function(){
+    let file = '1\n2';
+    let inputs = ["-c", "2", file, file];
+    let expectedOutput = '==> 1\n2 <==\n\n2\n==> 1\n2 <==\n\n2';
+    deepEqual(tail(fs,inputs),expectedOutput);
+  })
 });

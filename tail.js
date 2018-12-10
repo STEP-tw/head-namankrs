@@ -1,3 +1,7 @@
+let  fs = require('fs');
+let {tail} = require('./src/lib.js');
+let inputs = process.argv;
+console.log(tail(fs,inputs.slice(2)));
 /* 
   Usage:
   node ./tail.js file1

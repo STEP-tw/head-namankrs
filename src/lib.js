@@ -158,17 +158,25 @@ const runHead = function(fs, inputs) {
   }
   return contents;
 };
+const trimEnd = function(contents) {
+  contents = contents.split("\n");
+  contents.pop();
+  return contents.join("\n");
+};
 
 const formatContents = function(fs, mapper, count, file) {
   let formattedContents = `tail: ${file}: No such file or directory`;
   if (fs.existsSync(file)) {
-    let endCount = file.length;
+    let contents = fs.readFileSync(file, "utf8");
+    if (contents.endsWith("\n")) {
+      contents = trimEnd(contents);
+    }
+    let endCount = contents.length;
     let initCount = endCount - count;
     if (mapper == getLines) {
-      endCount = file.split("\n").length;
+      endCount = contents.split("\n").length;
       initCount = endCount - count;
     }
-    let contents = fs.readFileSync(file, "utf8");
     formattedContents = mapper(contents, endCount, initCount);
     formattedContents = `==> ${file} <==\n${formattedContents}`;
   }
@@ -180,6 +188,25 @@ const formatAllContents = function(fs, mapper, count, files) {
   return files.map(callback).join("\n");
 };
 
+const tail = function(fs, inputs) {
+  let { option, count, files } = parseInputs(inputs);
+  let process = { "-c": getCharacters, "-n": getLines };
+  let mapper = process[option];
+  let finalContents = formatAllContents(fs, mapper, count, files);
+  if (files.length == 1) {
+    finalContents = finalContents.split("\n");
+    finalContents.shift();
+    finalContents = finalContents.join("\n");
+  }
+  // if (fs.existsSync(files[0])) {
+  //   contents = fs.readFileSync(files[0], "utf8");
+  //   let endCount = contents.length;
+  //   let initCount = endCount - count;
+  //   contents = mapper(contents, endCount, initCount);
+  // }
+  return finalContents;
+};
+
 module.exports = {
   getCharacters,
   getLines,
@@ -189,5 +216,6 @@ module.exports = {
   validateInput,
   runHead,
   formatContents,
-  formatAllContents
+  formatAllContents,
+  tail
 };
