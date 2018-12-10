@@ -1,10 +1,10 @@
-const getCharacters = function(string, count) {
-  return string.slice(0, count);
+const getCharacters = function(string, endCount,initCount=0) {
+  return string.slice(initCount,endCount);
 };
 
-const getLines = function(string, count) {
+const getLines = function(string, endCount,initCount=0) {
   let lines = string.split("\n");
-  return lines.slice(0, count).join("\n");
+  return lines.slice(initCount,endCount).join("\n");
 };
 
 const modifyContents = function(fs, mapper, count, file) {
