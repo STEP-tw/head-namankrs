@@ -159,6 +159,22 @@ const runHead = function(fs, inputs) {
   return contents;
 };
 
+const formatContents = function(fs, mapper, count, file) {
+  let formattedContents = `tail: ${file}: No such file or directory`;
+  if (fs.existsSync(file)){
+    let endCount = file.length;
+    let initCount = endCount - count;
+    if(mapper == getLines){
+      endCount = file.split('\n').length;
+      initCount = endCount-count;
+    }
+    let contents = fs.readFileSync(file, "utf8");
+    formattedContents = mapper(contents, endCount,initCount);
+    formattedContents = `==> ${file} <==\n${formattedContents}`;
+  }
+  return formattedContents;
+};
+
 module.exports = {
   getCharacters,
   getLines,
@@ -166,5 +182,6 @@ module.exports = {
   getContents,
   parseInputs,
   validateInput,
-  runHead
+  runHead,
+    formatContents
 };

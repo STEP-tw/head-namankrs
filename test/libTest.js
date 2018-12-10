@@ -6,7 +6,8 @@ let {
   parseInputs,
   validateInput,
   getContents,
-  runHead
+  runHead,
+  formatContents
 } = require("../src/lib.js");
 
 describe("getCharacters", function() {
@@ -183,5 +184,16 @@ describe("runHead", function() {
     let expectedOutput = "head: illegal line count -- 3av";
     deepEqual(runHead(fs, ["-n3av", "runHead.js"]), expectedOutput);
     deepEqual(runHead(fs, ["-n", "3av", "runHead.js"]), expectedOutput);
+  });
+});
+
+describe("formatContents", function() {
+  it("should return the content of the file after adding header", function() {
+    let readFileSync = x => x;
+    let existsSync = x => true;
+    let fs = { readFileSync, existsSync };
+    let file = "1\n2\n3\n4";
+    let expectedOutput = '==> 1\n2\n3\n4 <==\n3\n4';
+    deepEqual(formatContents(fs,getLines,2,file),expectedOutput);
   });
 });
