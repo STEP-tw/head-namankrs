@@ -179,6 +179,7 @@ const formatContents = function(fs, mapper, count, file) {
       endCount = contents.split("\n").length;
       initCount = endCount - count;
     }
+    if (count > endCount) initCount = 0;
     formattedContents = mapper(contents, endCount, initCount);
     formattedContents = `==> ${file} <==\n${formattedContents}`;
   }
@@ -195,8 +196,8 @@ const tail = function(fs, inputs) {
   let process = { "-c": getCharacters, "-n": getLines };
   let mapper = process[option];
   let finalContents = formatAllContents(fs, mapper, count, files);
-  
-  if (!isCountValid(count)){
+
+  if (!isCountValid(count)) {
     return `tail: illegal offset -- ${count}`;
   }
   if (files.length > 1) return finalContents;
