@@ -195,7 +195,10 @@ const tail = function(fs, inputs) {
   let process = { "-c": getCharacters, "-n": getLines };
   let mapper = process[option];
   let finalContents = formatAllContents(fs, mapper, count, files);
-  if (files.length == 1) {
+
+  if (files.length > 1) return finalContents;
+
+  if(fs.existsSync(files[0])){
     finalContents = finalContents.split("\n");
     finalContents.shift();
     finalContents = finalContents.join("\n");
