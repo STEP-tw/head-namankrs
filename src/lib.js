@@ -192,7 +192,6 @@ const formatAllContents = function(fs, mapper, count, files) {
 
 const tail = function(fs, inputs) {
   let { option, count, files } = parseInputs(inputs);
-  console.log(count);
   let process = { "-c": getCharacters, "-n": getLines };
   let mapper = process[option];
   let finalContents = formatAllContents(fs, mapper, count, files);
