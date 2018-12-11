@@ -24,7 +24,8 @@ const getContents = function(fs, mapper, count, files) {
 
 const isOptionValid = x => x == "-n" || x == "-c";
 
-const isOptionAndCount = x => x[0] == "-" && x.length > 2;
+const isOption = x => x[0] == "-" && isNaN(x[1]);
+const isOptionAndCount = x => isOption(x) && x.length > 2;
 
 const isCountValid = x => !isNaN(x);
 
@@ -158,6 +159,7 @@ const runHead = function(fs, inputs) {
   }
   return contents;
 };
+
 const trimEnd = function(contents) {
   contents = contents.split("\n");
   contents.pop();
@@ -190,6 +192,7 @@ const formatAllContents = function(fs, mapper, count, files) {
 
 const tail = function(fs, inputs) {
   let { option, count, files } = parseInputs(inputs);
+  console.log(count);
   let process = { "-c": getCharacters, "-n": getLines };
   let mapper = process[option];
   let finalContents = formatAllContents(fs, mapper, count, files);
@@ -198,12 +201,6 @@ const tail = function(fs, inputs) {
     finalContents.shift();
     finalContents = finalContents.join("\n");
   }
-  // if (fs.existsSync(files[0])) {
-  //   contents = fs.readFileSync(files[0], "utf8");
-  //   let endCount = contents.length;
-  //   let initCount = endCount - count;
-  //   contents = mapper(contents, endCount, initCount);
-  // }
   return finalContents;
 };
 
