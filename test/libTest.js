@@ -29,9 +29,11 @@ describe("getLines", function() {
   it("should return an empty string when count is given as 0", function() {
     equal(getLines(input, 0), "");
   });
-  it("should return the number of lines as specified by count", function() {
+  it("should return the whole file if count is exactly same as file length", function() {
     let expectedOutput = "there are\nfew fruits in ";
     equal(getLines(input, 2), expectedOutput);
+  });
+  it("should return the first line if count is 1", function() {
     equal(getLines(input, 1), "there are");
   });
   it("should return whole string if specified count is more than the number of lines in string", function() {
@@ -41,31 +43,47 @@ describe("getLines", function() {
 });
 
 describe("modifyContents", function() {
+  let readFileSync = x => x;
+  let existsSync = x => true;
+  let fs = { readFileSync, existsSync };
+  let string = "hello world";
   it("should return the formatted content of a single file", function() {
-    let readFileSync = x => x;
-    let existsSync = x => true;
-    let fs = { readFileSync, existsSync };
-    let string = "hello world";
     let expectedOutput = "==> hello world <==\nhello world";
     equal(modifyContents(fs, getLines, 1, string), expectedOutput);
   });
+
+  it("should return the whole file if count is more than the file length", function() {
+    let expectedOutput = "==> hello world <==\nhello world";
+    equal(modifyContents(fs, getLines, 2, string), expectedOutput);
+  });
   it("should return the error message if file does not exist", function() {
-    let readFileSync = x => x;
-    let existsSync = x => false;
-    let fs = { readFileSync, existsSync };
-    let string = "hello world";
+    existsSync = x => false;
+    fs = { readFileSync, existsSync };
     let expectedOutput = "head: hello world: No such file or directory";
     equal(modifyContents(fs, getLines, 1, string), expectedOutput);
   });
 });
 
 describe("getContents", function() {
+  let readFileSync = x => x;
+  let existsSync = x => true;
+  let fs = { readFileSync, existsSync };
+  let files = ["hello", "world"];
   it("should return the formatted content of an array of files", function() {
-    let readFileSync = x => x;
-    let existsSync = x => true;
-    let fs = { readFileSync, existsSync };
-    let files = ["hello", "world"];
     let expectedOutput = "==> hello <==\nhello\n==> world <==\nworld";
+    deepEqual(getContents(fs, getLines, 1, files), expectedOutput);
+  });
+  it("should return an error message for single missing file", function() {
+    let existsSync = x => false;
+    let fs = { readFileSync, existsSync };
+    let expectedOutput = "head: hello: No such file or directory";
+    deepEqual(getContents(fs, getLines, 1, ["hello"]), expectedOutput);
+  });
+  it("should return an error message for more than one missing file", function() {
+    let existsSync = x => false;
+    let fs = { readFileSync, existsSync };
+    let expectedOutput =
+      "head: hello: No such file or directory\nhead: world: No such file or directory";
     deepEqual(getContents(fs, getLines, 1, files), expectedOutput);
   });
 });
@@ -78,19 +96,21 @@ describe("parseInputs", function() {
       files: ["head.js"]
     });
   });
-  it("should change the default when some states are given", function() {
+  it("should change the default when -n option is given", function() {
     deepEqual(parseInputs(["-n", "5", "hello", "world"]), {
       option: "-n",
       count: "5",
       files: ["hello", "world"]
     });
+  });
+  it("should change the default when -c option is given", function() {
     deepEqual(parseInputs(["-c", "5", "hello", "world"]), {
       option: "-c",
       count: "5",
       files: ["hello", "world"]
     });
   });
-  it("should work when option and count are not seperated by space", function() {
+  it("should change the default when option and count are not seperated by space", function() {
     deepEqual(parseInputs(["-c5", "hello", "world"]), {
       option: "-c",
       count: "5",
@@ -101,6 +121,13 @@ describe("parseInputs", function() {
     deepEqual(parseInputs(["-5", "hello", "world"]), {
       option: "-n",
       count: "5",
+      files: ["hello", "world"]
+    });
+  });
+  it("should return the default count if no count is given", function() {
+    deepEqual(parseInputs(["hello", "world"]), {
+      option: "-n",
+      count: "10",
       files: ["hello", "world"]
     });
   });
@@ -133,12 +160,18 @@ describe("validateInput", function() {
     };
     deepEqual(validateInput(["-n0", "6", "head.js"]), expectedOutput);
   });
-  it("should return a error message for alphanumeric count", function() {
+  it("should return a error message for alphanumeric option merged count", function() {
     let expectedOutput = {
       message: "head: illegal line count -- 3av",
       errorState: true
     };
     deepEqual(validateInput(["-n3av", "head.js"]), expectedOutput);
+  });
+  it("should return a error message for alphanumeric count", function() {
+    let expectedOutput = {
+      message: "head: illegal line count -- 3av",
+      errorState: true
+    };
     deepEqual(validateInput(["-n", "3av", "head.js"]), expectedOutput);
   });
 });
@@ -155,11 +188,7 @@ describe("runHead", function() {
     deepEqual(runHead(fs, ["-n", "1", file]), file);
     deepEqual(runHead(fs, ["-n", "1", file, file]), expectedOutput);
   });
-  it("should return an error message for single missing file", function() {
-    let existsSync = x => false;
-    let expectedOutput = "hello world";
-    deepEqual(runHead(fs, ["-n", "1", file]), expectedOutput);
-  });
+
   it("should return 5 characters of text when option is -c and count is 5", function() {
     deepEqual(runHead(fs, ["-c", "5", file]), "hello");
   });
@@ -171,10 +200,12 @@ describe("runHead", function() {
     deepEqual(runHead(fs, ["-0", "runHead.js"]), expectedOutput);
   });
   it("should return a error message when option is other than n or c", function() {
-    let expectedOutput1 = `head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]`;
-    let expectedOutput2 = `head: illegal option -- h\nusage: head [-n lines | -c bytes] [file ...]`;
-    deepEqual(runHead(fs, ["-v", "5", "runHead.js"]), expectedOutput1);
-    deepEqual(runHead(fs, ["-hello", "5", "runHead.js"]), expectedOutput2);
+    let expectedOutput = `head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]`;
+    deepEqual(runHead(fs, ["-v", "5", "runHead.js"]), expectedOutput);
+  });
+  it("should return an error message with mentioning first alphabet if option is a word", function() {
+    let expectedOutput = `head: illegal option -- h\nusage: head [-n lines | -c bytes] [file ...]`;
+    deepEqual(runHead(fs, ["-hello", "5", "runHead.js"]), expectedOutput);
   });
   it("should return a error message when count is given as 0", function() {
     deepEqual(
@@ -187,20 +218,37 @@ describe("runHead", function() {
     deepEqual(runHead(fs, ["-n3av", "runHead.js"]), expectedOutput);
     deepEqual(runHead(fs, ["-n", "3av", "runHead.js"]), expectedOutput);
   });
+  it("should return an error message for single missing file", function() {
+    let existsSync = x => false;
+    let fs = { readFileSync, existsSync };
+    let expectedOutput = 'head: hello world: No such file or directory';
+    deepEqual(runHead(fs, ["-n", "1", file]), expectedOutput);
+  });
 });
 
 describe("formatContents", function() {
   let readFileSync = x => x;
   let existsSync = x => true;
   let fs = { readFileSync, existsSync };
-  let file = "1\n2\n3\n4";
+  let file = "1\n2\n3\n4\n";
   it("should return the content of the file after adding header", function() {
-    let expectedOutput = "==> 1\n2\n3\n4 <==\n3\n4";
+    let expectedOutput = "==> 1\n2\n3\n4\n <==\n3\n4";
     deepEqual(formatContents(fs, getLines, 2, file), expectedOutput);
   });
   it("should return the content of the file after adding header", function() {
-    let expectedOutput = "==> 1\n2\n3\n4 <==\n\n3\n4";
-    deepEqual(formatContents(fs, getCharacters,4, file), expectedOutput);
+    let expectedOutput = "==> 1\n2\n3\n4\n <==\n\n3\n4";
+    deepEqual(formatContents(fs, getCharacters, 4, file), expectedOutput);
+  });
+  it("should return the entire content if count is greater than file length", function() {
+    let expectedOutput = "==> 1\n2\n3\n4\n <==\n1\n2\n3\n4";
+    deepEqual(formatContents(fs, getCharacters, 10, file), expectedOutput);
+  });
+  it("should return an error message if file name is invalid", function() {
+    let existsSync = x => false;
+    let fs = { readFileSync, existsSync };
+    let file = "hello";
+    let expectedOutput = "tail: hello: No such file or directory";
+    deepEqual(formatContents(fs, getLines, 2, file), expectedOutput);
   });
 });
 
@@ -216,25 +264,47 @@ describe("formatAllContents", function() {
     deepEqual(formatAllContents(fs, getLines, 2, files), expectedOutput);
   });
   it("should return the formatted contents of all the given files", function() {
-    let expectedOutput = '==> 1\n2\n3\n4 <==\n3\n4\n==> 5\n6\n7 <==\n6\n7';
+    let expectedOutput = "==> 1\n2\n3\n4 <==\n3\n4\n==> 5\n6\n7 <==\n6\n7";
     deepEqual(formatAllContents(fs, getCharacters, 3, files), expectedOutput);
   });
 });
 
-describe('tail',function(){
+describe("tail", function() {
   let readFileSync = x => x;
   let existsSync = x => true;
   let fs = { readFileSync, existsSync };
-  it('should return last two lines when option is n and count is 2',function(){
-    let file = '1\n2';
+  it("should return last two lines when option is n and count is 2 for more than one file", function() {
+    let file = "1\n2";
     let inputs = ["-n", "2", file, file];
-    let expectedOutput = '==> 1\n2 <==\n1\n2\n==> 1\n2 <==\n1\n2';
-    deepEqual(tail(fs,inputs),expectedOutput);
+    let expectedOutput = "==> 1\n2 <==\n1\n2\n==> 1\n2 <==\n1\n2";
+    deepEqual(tail(fs, inputs), expectedOutput);
   });
-  it('should return last two characters when option is c and count is 2',function(){
-    let file = '1\n2';
+  it("should return last two characters when option is c and count is 2 for more than one file", function() {
+    let file = "1\n2";
     let inputs = ["-c", "2", file, file];
-    let expectedOutput = '==> 1\n2 <==\n\n2\n==> 1\n2 <==\n\n2';
-    deepEqual(tail(fs,inputs),expectedOutput);
-  })
+    let expectedOutput = "==> 1\n2 <==\n\n2\n==> 1\n2 <==\n\n2";
+    deepEqual(tail(fs, inputs), expectedOutput);
+  });
+  it("should return contents when single file is given", function() {
+    let file = "hello";
+    let inputs = ["-c", "2", file];
+    let expectedOutput = "lo";
+    deepEqual(tail(fs, inputs), expectedOutput);
+  });
+  it("should return an error message for a single missing file", function() {
+    let file = "hello";
+    let inputs = ["-c", "2", file];
+    let existsSync = x => false;
+    let fs = { readFileSync, existsSync };
+    let expectedOutput = "tail: hello: No such file or directory";
+    deepEqual(tail(fs, inputs), expectedOutput);
+  });
+  it("should return an error message for invalid count", function() {
+    let file = "hello";
+    let inputs = ["-c", "2ac", file];
+    let existsSync = x => true;
+    let fs = { readFileSync, existsSync };
+    let expectedOutput = "tail: illegal offset -- 2ac";
+    deepEqual(tail(fs, inputs), expectedOutput);
+  });
 });
