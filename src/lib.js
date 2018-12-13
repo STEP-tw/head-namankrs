@@ -151,7 +151,7 @@ const removeHeader = function(contents){
   return trimmedContents.join("\n");
 };
 
-const runHead = function(fs, inputs) {
+const head = function(fs, inputs) {
   let { errorState, message } = validateInput(inputs);
   if (errorState) return message;
 
@@ -219,7 +219,7 @@ module.exports = {
   getContents,
   parseInputs,
   validateInput,
-  runHead,
+  head,
   formatContents,
   formatAllContents,
   tail

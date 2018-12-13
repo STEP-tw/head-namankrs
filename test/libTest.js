@@ -6,7 +6,7 @@ let {
   parseInputs,
   validateInput,
   getContents,
-  runHead,
+  head,
   formatContents,
   formatAllContents,
   tail
@@ -176,7 +176,7 @@ describe("validateInput", function() {
   });
 });
 
-describe("runHead", function() {
+describe("head", function() {
   let readFileSync = x => x;
   let existsSync = x => true;
   let fs = { readFileSync, existsSync };
@@ -185,44 +185,44 @@ describe("runHead", function() {
   it("should return 1 lines of text when option is -n and count is 1", function() {
     let expectedOutput =
       "==> hello world <==\nhello world\n==> hello world <==\nhello world";
-    deepEqual(runHead(fs, ["-n", "1", file]), file);
-    deepEqual(runHead(fs, ["-n", "1", file, file]), expectedOutput);
+    deepEqual(head(fs, ["-n", "1", file]), file);
+    deepEqual(head(fs, ["-n", "1", file, file]), expectedOutput);
   });
 
   it("should return 5 characters of text when option is -c and count is 5", function() {
-    deepEqual(runHead(fs, ["-c", "5", file]), "hello");
+    deepEqual(head(fs, ["-c", "5", file]), "hello");
   });
   it("should return first 10 lines when no option is given", function() {
-    deepEqual(runHead(fs, [file]), file);
+    deepEqual(head(fs, [file]), file);
   });
   it("should return error message when -0 is given as option", function() {
     let expectedOutput = "head: illegal line count -- 0";
-    deepEqual(runHead(fs, ["-0", "runHead.js"]), expectedOutput);
+    deepEqual(head(fs, ["-0", "head.js"]), expectedOutput);
   });
   it("should return a error message when option is other than n or c", function() {
     let expectedOutput = `head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]`;
-    deepEqual(runHead(fs, ["-v", "5", "runHead.js"]), expectedOutput);
+    deepEqual(head(fs, ["-v", "5", "head.js"]), expectedOutput);
   });
   it("should return an error message with mentioning first alphabet if option is a word", function() {
     let expectedOutput = `head: illegal option -- h\nusage: head [-n lines | -c bytes] [file ...]`;
-    deepEqual(runHead(fs, ["-hello", "5", "runHead.js"]), expectedOutput);
+    deepEqual(head(fs, ["-hello", "5", "head.js"]), expectedOutput);
   });
   it("should return a error message when count is given as 0", function() {
     deepEqual(
-      runHead(fs, ["-n0", "6", "runHead.js"]),
+      head(fs, ["-n0", "6", "head.js"]),
       "head: illegal line count -- 0"
     );
   });
   it("should return a error message for alphanumeric count", function() {
     let expectedOutput = "head: illegal line count -- 3av";
-    deepEqual(runHead(fs, ["-n3av", "runHead.js"]), expectedOutput);
-    deepEqual(runHead(fs, ["-n", "3av", "runHead.js"]), expectedOutput);
+    deepEqual(head(fs, ["-n3av", "head.js"]), expectedOutput);
+    deepEqual(head(fs, ["-n", "3av", "head.js"]), expectedOutput);
   });
   it("should return an error message for single missing file", function() {
     let existsSync = x => false;
     let fs = { readFileSync, existsSync };
     let expectedOutput = 'head: hello world: No such file or directory';
-    deepEqual(runHead(fs, ["-n", "1", file]), expectedOutput);
+    deepEqual(head(fs, ["-n", "1", file]), expectedOutput);
   });
 });
 
