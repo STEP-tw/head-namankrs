@@ -146,6 +146,12 @@ const head = function(fs, inputs) {
   return { files, contents, count, mapper };
 };
 
+const removeHeader = function(contents){
+  trimmedContents = contents.split("\n");
+  trimmedContents.shift();
+  return trimmedContents.join("\n");
+};
+
 const runHead = function(fs, inputs) {
   let { errorState, message } = validateInput(inputs);
   if (errorState) return message;
@@ -154,10 +160,9 @@ const runHead = function(fs, inputs) {
   if (files.length > 1) return contents;
 
   if (fs.existsSync(files[0])) {
-    contents = fs.readFileSync(files[0], "utf8");
-    contents = mapper(contents, count);
-  }
-  return contents;
+    contents = removeHeader(contents);
+    }
+    return contents;
 };
 
 const trimEnd = function(contents) {
@@ -203,10 +208,8 @@ const tail = function(fs, inputs) {
   if (files.length > 1) return finalContents;
 
   if (fs.existsSync(files[0])) {
-    finalContents = finalContents.split("\n");
-    finalContents.shift();
-    finalContents = finalContents.join("\n");
-  }
+    finalContents = removeHeader(finalContents);
+      }
   return finalContents;
 };
 
