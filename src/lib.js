@@ -138,12 +138,11 @@ const validateInput = function(input) {
   return { errorState, message };
 };
 
-const head = function(fs, inputs) {
+const process = function(fs, inputs) {
   let { option, count, files } = parseInputs(inputs);
   let process = { "-c": getCharacters, "-n": getLines };
   let mapper = process[option];
-  let contents = getContents(fs, mapper, count, files);
-  return { files, contents, count, mapper };
+  return { files, count, mapper };
 };
 
 const removeHeader = function(contents){
@@ -156,7 +155,9 @@ const runHead = function(fs, inputs) {
   let { errorState, message } = validateInput(inputs);
   if (errorState) return message;
 
-  let { files, contents, count, mapper } = head(fs, inputs);
+  let { files,count, mapper } = process(fs, inputs);
+  let contents = getContents(fs, mapper, count, files);
+
   if (files.length > 1) return contents;
 
   if (fs.existsSync(files[0])) {
@@ -197,9 +198,7 @@ const formatAllContents = function(fs, mapper, count, files) {
 };
 
 const tail = function(fs, inputs) {
-  let { option, count, files } = parseInputs(inputs);
-  let process = { "-c": getCharacters, "-n": getLines };
-  let mapper = process[option];
+  let { files,count, mapper } = process(fs, inputs);
   let finalContents = formatAllContents(fs, mapper, count, files);
 
   if (!isCountValid(count)) {
