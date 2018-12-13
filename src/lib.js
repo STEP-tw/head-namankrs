@@ -145,7 +145,7 @@ const process = function(fs, inputs) {
   return { files, count, mapper };
 };
 
-const removeHeader = function(contents){
+const removeHeader = function(contents) {
   trimmedContents = contents.split("\n");
   trimmedContents.shift();
   return trimmedContents.join("\n");
@@ -155,21 +155,32 @@ const head = function(fs, inputs) {
   let { errorState, message } = validateInput(inputs);
   if (errorState) return message;
 
-  let { files,count, mapper } = process(fs, inputs);
+  let { files, count, mapper } = process(fs, inputs);
   let contents = getContents(fs, mapper, count, files);
 
   if (files.length > 1) return contents;
 
   if (fs.existsSync(files[0])) {
     contents = removeHeader(contents);
-    }
-    return contents;
+  }
+  return contents;
 };
 
 const trimEnd = function(contents) {
   contents = contents.split("\n");
   contents.pop();
   return contents.join("\n");
+};
+
+const getCounts = function(contents,mapper,count) {
+  let endCount = contents.length;
+  let initCount = endCount - count;
+  if (mapper == getLines) {
+    endCount = contents.split("\n").length;
+    initCount = endCount - count;
+  }
+  if (count > endCount) initCount = 0;
+  return {endCount,initCount};
 };
 
 const formatContents = function(fs, mapper, count, file) {
@@ -179,12 +190,13 @@ const formatContents = function(fs, mapper, count, file) {
     if (contents.endsWith("\n")) {
       contents = trimEnd(contents);
     }
-    let endCount = contents.length;
-    let initCount = endCount - count;
-    if (mapper == getLines) {
-      endCount = contents.split("\n").length;
-      initCount = endCount - count;
-    }
+    let {endCount,initCount} = getCounts(contents,mapper,count);
+    // let endCount = contents.length;
+    // let initCount = endCount - count;
+    // if (mapper == getLines) {
+    //   endCount = contents.split("\n").length;
+    //   initCount = endCount - count;
+    // }
     if (count > endCount) initCount = 0;
     formattedContents = mapper(contents, endCount, initCount);
     formattedContents = `==> ${file} <==\n${formattedContents}`;
@@ -198,7 +210,7 @@ const formatAllContents = function(fs, mapper, count, files) {
 };
 
 const tail = function(fs, inputs) {
-  let { files,count, mapper } = process(fs, inputs);
+  let { files, count, mapper } = process(fs, inputs);
   let finalContents = formatAllContents(fs, mapper, count, files);
 
   if (!isCountValid(count)) {
@@ -208,7 +220,7 @@ const tail = function(fs, inputs) {
 
   if (fs.existsSync(files[0])) {
     finalContents = removeHeader(finalContents);
-      }
+  }
   return finalContents;
 };
 
