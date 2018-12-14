@@ -97,7 +97,7 @@ const validateInput = function(input) {
   return { errorState, message };
 };
 
-const process = function(fs, inputs) {
+const getDetails = function(inputs) {
   let { option, count, files } = parseInput(inputs);
   let func = { "-c": getCharacters, "-n": getLines };
   let mapper = func[option];
@@ -114,7 +114,7 @@ const head = function(fs, inputs) {
   let { errorState, message } = validateInput(inputs);
   if (errorState) return message;
 
-  let { files, count, mapper } = process(fs, inputs);
+  let { files, count, mapper } = getDetails(inputs);
   let contents = getContents(fs, mapper, count, files);
 
   if (files.length > 1) return contents;
@@ -163,7 +163,7 @@ const formatAllContents = function(fs, mapper, count, files) {
 };
 
 const tail = function(fs, inputs) {
-  let { files, count, mapper } = process(fs, inputs);
+  let { files, count, mapper } = getDetails(inputs);
   let finalContents = formatAllContents(fs, mapper, count, files);
 
   if (!isCountValid(count)) {
