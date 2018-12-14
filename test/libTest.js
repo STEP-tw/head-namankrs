@@ -1,9 +1,8 @@
-let { equal, deepEqual } = require("assert");
-let {
+const { equal, deepEqual } = require("assert");
+const {
   getCharacters,
   getLines,
   modifyContents,
-  parseInputs,
   validateInput,
   getContents,
   head,
@@ -85,51 +84,6 @@ describe("getContents", function() {
     let expectedOutput =
       "head: hello: No such file or directory\nhead: world: No such file or directory";
     deepEqual(getContents(fs, getLines, 1, files), expectedOutput);
-  });
-});
-
-describe("parseInputs", function() {
-  it("should return the default state when no option and count are provided", function() {
-    deepEqual(parseInputs(["head.js"]), {
-      option: "-n",
-      count: "10",
-      files: ["head.js"]
-    });
-  });
-  it("should change the default when -n option is given", function() {
-    deepEqual(parseInputs(["-n", "5", "hello", "world"]), {
-      option: "-n",
-      count: "5",
-      files: ["hello", "world"]
-    });
-  });
-  it("should change the default when -c option is given", function() {
-    deepEqual(parseInputs(["-c", "5", "hello", "world"]), {
-      option: "-c",
-      count: "5",
-      files: ["hello", "world"]
-    });
-  });
-  it("should change the default when option and count are not seperated by space", function() {
-    deepEqual(parseInputs(["-c5", "hello", "world"]), {
-      option: "-c",
-      count: "5",
-      files: ["hello", "world"]
-    });
-  });
-  it("should take -n as default when only count is given", function() {
-    deepEqual(parseInputs(["-5", "hello", "world"]), {
-      option: "-n",
-      count: "5",
-      files: ["hello", "world"]
-    });
-  });
-  it("should return the default count if no count is given", function() {
-    deepEqual(parseInputs(["hello", "world"]), {
-      option: "-n",
-      count: "10",
-      files: ["hello", "world"]
-    });
   });
 });
 
@@ -221,7 +175,7 @@ describe("head", function() {
   it("should return an error message for single missing file", function() {
     let existsSync = x => false;
     let fs = { readFileSync, existsSync };
-    let expectedOutput = 'head: hello world: No such file or directory';
+    let expectedOutput = "head: hello world: No such file or directory";
     deepEqual(head(fs, ["-n", "1", file]), expectedOutput);
   });
 });

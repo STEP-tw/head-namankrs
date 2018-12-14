@@ -1,3 +1,4 @@
+const {parseInput} = require('./parseInput.js');
 const getCharacters = function(string, endCount, initCount = 0) {
   return string.slice(initCount, endCount);
 };
@@ -22,49 +23,7 @@ const getContents = function(fs, mapper, count, files) {
   return files.map(callback).join("\n");
 };
 
-const isOptionValid = x => x == "-n" || x == "-c";
-
-const isOption = x => x[0] == "-" && isNaN(x[1]);
-const isOptionAndCount = x => isOption(x) && x.length > 2;
-
 const isCountValid = x => !isNaN(x);
-
-const parseOptionInput = function(inputs) {
-  return { option: inputs[0], count: inputs[1], files: inputs.slice(2) };
-};
-
-const parseOptionAndCountInput = function(inputs) {
-  return {
-    option: inputs[0].slice(0, 2),
-    count: inputs[0].slice(2),
-    files: inputs.slice(1)
-  };
-};
-
-const parseCountInput = function(inputs) {
-  return {
-    option: "-n",
-    count: Math.abs(inputs[0]),
-    files: inputs.slice(1)
-  };
-};
-
-const parseInputs = function(inputs) {
-  let states = { option: "-n", count: "10", files: inputs.slice() };
-
-  if (isOptionValid(inputs[0])) {
-    return parseOptionInput(inputs);
-  }
-
-  if (isOptionAndCount(inputs[0])) {
-    return parseOptionAndCountInput(inputs);
-  }
-
-  if (isCountValid(inputs[0])) {
-    return parseCountInput(inputs);
-  }
-  return states;
-};
 
 const isCountInvalid = x => x == "-0";
 
@@ -139,9 +98,9 @@ const validateInput = function(input) {
 };
 
 const process = function(fs, inputs) {
-  let { option, count, files } = parseInputs(inputs);
-  let process = { "-c": getCharacters, "-n": getLines };
-  let mapper = process[option];
+  let { option, count, files } = parseInput(inputs);
+  let func = { "-c": getCharacters, "-n": getLines };
+  let mapper = func[option];
   return { files, count, mapper };
 };
 
@@ -191,12 +150,6 @@ const formatContents = function(fs, mapper, count, file) {
       contents = trimEnd(contents);
     }
     let {endCount,initCount} = getCounts(contents,mapper,count);
-    // let endCount = contents.length;
-    // let initCount = endCount - count;
-    // if (mapper == getLines) {
-    //   endCount = contents.split("\n").length;
-    //   initCount = endCount - count;
-    // }
     if (count > endCount) initCount = 0;
     formattedContents = mapper(contents, endCount, initCount);
     formattedContents = `==> ${file} <==\n${formattedContents}`;
@@ -229,7 +182,6 @@ module.exports = {
   getLines,
   modifyContents,
   getContents,
-  parseInputs,
   validateInput,
   head,
   formatContents,
