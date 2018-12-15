@@ -37,19 +37,19 @@ describe("getCharacters", function() {
 });
 
 describe("getLines", function() {
-  let input = "there are\nfew fruits in \n the orchard.";
+  let input = "1\n2\n3\n4";
   it("should return an empty string when count is given as 0", function() {
     equal(getLines(input, 0), "");
   });
   it("should return the whole file if count is exactly same as file length", function() {
-    let expectedOutput = "there are\nfew fruits in ";
+    let expectedOutput = "1\n2";
     equal(getLines(input, 2), expectedOutput);
   });
   it("should return the first line if count is 1", function() {
-    equal(getLines(input, 1), "there are");
+    equal(getLines(input, 1), "1");
   });
   it("should return whole string if specified count is more than the number of lines in string", function() {
-    let expectedOutput = "there are\nfew fruits in \n the orchard.";
+    let expectedOutput = "1\n2\n3\n4";
     equal(getLines(input, 10), expectedOutput);
   });
 });
