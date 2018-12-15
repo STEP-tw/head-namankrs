@@ -1,12 +1,12 @@
 const { parseInput } = require("./parseInput.js");
 const { validateInput } = require("./validateInput.js");
 
-const getCharacters = function(string, endCount, initCount = 0) {
-  return string.slice(initCount, endCount);
+const getCharacters = function(contents, endCount, initCount = 0) {
+  return contents.slice(initCount, endCount);
 };
 
-const getLines = function(string, endCount, initCount = 0) {
-  let lines = string.split("\n");
+const getLines = function(contents, endCount, initCount = 0) {
+  let lines = contents.split("\n");
   return lines.slice(initCount, endCount).join("\n");
 };
 
