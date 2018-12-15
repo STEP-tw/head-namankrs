@@ -111,7 +111,6 @@ module.exports = {
   getLines,
   modifyContents,
   getContents,
-  validateInput,
   head,
   formatContents,
   formatAllContents,

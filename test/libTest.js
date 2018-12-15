@@ -3,7 +3,6 @@ const {
   getCharacters,
   getLines,
   modifyContents,
-  validateInput,
   getContents,
   head,
   formatContents,
