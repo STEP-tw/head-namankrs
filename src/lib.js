@@ -10,12 +10,12 @@ const getLines = function(string, endCount, initCount = 0) {
   return lines.slice(initCount, endCount).join("\n");
 };
 
-const modifyContents = function(fs, mapper, count, file) {
-  let modifiedContents = `head: ${file}: No such file or directory`;
-  if (fs.existsSync(file)) {
-    let contents = fs.readFileSync(file, "utf8");
+const modifyContents = function(fs, mapper, count, filePath) {
+  let modifiedContents = `head: ${filePath}: No such file or directory`;
+  if (fs.existsSync(filePath)) {
+    let contents = fs.readFileSync(filePath, "utf8");
     modifiedContents = mapper(contents, count);
-    modifiedContents = `==> ${file} <==\n${modifiedContents}`;
+    modifiedContents = `==> ${filePath} <==\n${modifiedContents}`;
   }
   return modifiedContents;
 };
