@@ -68,32 +68,30 @@ describe("modifyContents", function() {
     let expectedOutput = "==> ../file <==\n1\n2\n3\n4";
     equal(modifyContents(fs, getLines, 10, "../file"), expectedOutput);
   });
-  it("should return the error message if file does not exist", function() {
+  it("should return an error message if file does not exist", function() {
     let expectedOutput = "head: ../file1: No such file or directory";
     equal(modifyContents(fs, getLines, 1, "../file1"), expectedOutput);
   });
 });
 
 describe("getContents", function() {
-  let readFileSync = x => x;
-  let existsSync = x => true;
+  let fileContents = "1\n2\n3\n4";
+  const readFileSync = mockReader("../file", fileContents);
+  const existsSync = mockValidator("../file");
   let fs = { readFileSync, existsSync };
-  let files = ["hello", "world"];
-  it("should return the formatted content of an array of files", function() {
-    let expectedOutput = "==> hello <==\nhello\n==> world <==\nworld";
-    deepEqual(getContents(fs, getLines, 1, files), expectedOutput);
+  let files = ["../file", "../file"];
+  it("should return the formatted contents of an array of files", function() {
+    let expectedOutput = "==> ../file <==\n1\n2\n==> ../file <==\n1\n2";
+    deepEqual(getContents(fs, getLines, 2, files), expectedOutput);
   });
   it("should return an error message for single missing file", function() {
-    let existsSync = x => false;
-    let fs = { readFileSync, existsSync };
-    let expectedOutput = "head: hello: No such file or directory";
-    deepEqual(getContents(fs, getLines, 1, ["hello"]), expectedOutput);
+    let expectedOutput = "head: ../file1: No such file or directory";
+    deepEqual(getContents(fs, getLines, 1, ["../file1"]), expectedOutput);
   });
   it("should return an error message for more than one missing file", function() {
-    let existsSync = x => false;
-    let fs = { readFileSync, existsSync };
+    files = ["../file1", "../file2"];
     let expectedOutput =
-      "head: hello: No such file or directory\nhead: world: No such file or directory";
+      "head: ../file1: No such file or directory\nhead: ../file2: No such file or directory";
     deepEqual(getContents(fs, getLines, 1, files), expectedOutput);
   });
 });
