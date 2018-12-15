@@ -1,5 +1,6 @@
 const { parseInput } = require("./parseInput.js");
 const { validateInput } = require("./validateInput.js");
+
 const getCharacters = function(string, endCount, initCount = 0) {
   return string.slice(initCount, endCount);
 };
@@ -34,7 +35,7 @@ const getDetails = function(inputs) {
 };
 
 const removeHeader = function(contents) {
-  trimmedContents = contents.split("\n");
+  let trimmedContents = contents.split("\n");
   trimmedContents.shift();
   return trimmedContents.join("\n");
 };
