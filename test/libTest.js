@@ -26,13 +26,13 @@ const mockValidator = function(expectedFile) {
 
 describe("getCharacters", function() {
   it("should return an empty string when count is given as 0", function() {
-    equal(getCharacters("naman", 0), "");
+    equal(getCharacters("hello", 0), "");
   });
   it("should return a set of characters when count greater than 0 is given", function() {
-    equal(getCharacters("naman", 3), "nam");
+    equal(getCharacters("hello", 3), "hel");
   });
   it("should return the whole string if count greater than string length is given", function() {
-    equal(getCharacters("naman", 10), "naman");
+    equal(getCharacters("hello", 10), "hello");
   });
 });
 
