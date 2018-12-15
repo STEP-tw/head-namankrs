@@ -10,6 +10,20 @@ const {
   tail
 } = require("../src/lib.js");
 
+const mockReader = function(expectedFile, expectedContent) {
+  return function(actualFile) {
+    if (actualFile == expectedFile) {
+      return expectedContent;
+    }
+  };
+};
+
+const mockValidator = function(expectedFile) {
+  return function(actualFile) {
+    return actualFile == expectedFile;
+  };
+};
+
 describe("getCharacters", function() {
   it("should return an empty string when count is given as 0", function() {
     equal(getCharacters("naman", 0), "");
@@ -41,24 +55,22 @@ describe("getLines", function() {
 });
 
 describe("modifyContents", function() {
-  let readFileSync = x => x;
-  let existsSync = x => true;
-  let fs = { readFileSync, existsSync };
-  let string = "hello world";
-  it("should return the formatted content of a single file", function() {
-    let expectedOutput = "==> hello world <==\nhello world";
-    equal(modifyContents(fs, getLines, 1, string), expectedOutput);
+  let fileContents = "1\n2\n3\n4";
+  const readFileSync = mockReader("../file", fileContents);
+  const existsSync = mockValidator("../file");
+  const fs = { readFileSync, existsSync };
+  it("should return the formatted single line of a file", function() {
+    let expectedOutput = "==> ../file <==\n1";
+    equal(modifyContents(fs, getLines, 1, "../file"), expectedOutput);
   });
 
-  it("should return the whole file if count is more than the file length", function() {
-    let expectedOutput = "==> hello world <==\nhello world";
-    equal(modifyContents(fs, getLines, 2, string), expectedOutput);
+  it("should return the whole file if count is more than the number of lines in file", function() {
+    let expectedOutput = "==> ../file <==\n1\n2\n3\n4";
+    equal(modifyContents(fs, getLines, 10, "../file"), expectedOutput);
   });
   it("should return the error message if file does not exist", function() {
-    existsSync = x => false;
-    fs = { readFileSync, existsSync };
-    let expectedOutput = "head: hello world: No such file or directory";
-    equal(modifyContents(fs, getLines, 1, string), expectedOutput);
+    let expectedOutput = "head: ../file1: No such file or directory";
+    equal(modifyContents(fs, getLines, 1, "../file1"), expectedOutput);
   });
 });
 
