@@ -1,9 +1,9 @@
-const main = function(){
-let  fs = require('fs');
-let {tail} = require('./src/lib.js');
-let inputs = process.argv;
-console.log(tail(fs,inputs.slice(2)));
-}
+const main = function() {
+  let fs = require("fs");
+  let { tail } = require("./src/lib.js");
+  let inputs = process.argv;
+  console.log(tail(fs, inputs.slice(2)));
+};
 main();
 /* 
   Usage:
@@ -20,6 +20,3 @@ main();
   node ./tail.js -c5 file1 file2
   node ./tail.js -c 5 file1 file2
 */
-
-
-

@@ -1,5 +1,5 @@
-const {parseInput} = require('./parseInput.js');
-const {validateInput} = require('./validateInput.js')
+const { parseInput } = require("./parseInput.js");
+const { validateInput } = require("./validateInput.js");
 const getCharacters = function(string, endCount, initCount = 0) {
   return string.slice(initCount, endCount);
 };
@@ -60,7 +60,7 @@ const trimEnd = function(contents) {
   return contents.join("\n");
 };
 
-const getCounts = function(contents,mapper,count) {
+const getCounts = function(contents, mapper, count) {
   let endCount = contents.length;
   let initCount = endCount - count;
   if (mapper == getLines) {
@@ -68,7 +68,7 @@ const getCounts = function(contents,mapper,count) {
     initCount = endCount - count;
   }
   if (count > endCount) initCount = 0;
-  return {endCount,initCount};
+  return { endCount, initCount };
 };
 
 const formatContents = function(fs, mapper, count, file) {
@@ -78,7 +78,7 @@ const formatContents = function(fs, mapper, count, file) {
     if (contents.endsWith("\n")) {
       contents = trimEnd(contents);
     }
-    let {endCount,initCount} = getCounts(contents,mapper,count);
+    let { endCount, initCount } = getCounts(contents, mapper, count);
     if (count > endCount) initCount = 0;
     formattedContents = mapper(contents, endCount, initCount);
     formattedContents = `==> ${file} <==\n${formattedContents}`;
