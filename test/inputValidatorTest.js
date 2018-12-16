@@ -3,46 +3,51 @@ const assert = require("assert");
 
 describe("validateInput", function() {
   it("should return error message when -0 is given as option", function() {
-    let expectedOutput = {
+    const input = ["-0", "head.js"];
+    const expectedOutput = {
       message: "head: illegal line count -- 0",
       errorState: true
     };
-    assert.deepEqual(validateInput(["-0", "head.js"]), expectedOutput);
+    assert.deepEqual(validateInput(input), expectedOutput);
   });
   it("should return a error message when option is other than n or c", function() {
-    let expectedOutput1 = {
+    const input = ["-v", "5", "head.js"];
+    const expectedOutput = {
       message: `head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]`,
       errorState: true
     };
-    let expectedOutput2 = {
+    assert.deepEqual(validateInput(input), expectedOutput);
+  });
+  it("should return error message with first letter of the word given as wrong option", function() {
+    const input = ["-hello", "5", "head.js"];
+    const expectedOutput = {
       message: `head: illegal option -- h\nusage: head [-n lines | -c bytes] [file ...]`,
       errorState: true
     };
-    assert.deepEqual(validateInput(["-v", "5", "head.js"]), expectedOutput1);
-    assert.deepEqual(
-      validateInput(["-hello", "5", "head.js"]),
-      expectedOutput2
-    );
+    assert.deepEqual(validateInput(input), expectedOutput);
   });
   it("should return a error message when count is given as 0", function() {
-    let expectedOutput = {
+    const input = ["-n0", "6", "head.js"];
+    const expectedOutput = {
       message: "head: illegal line count -- 0",
       errorState: true
     };
-    assert.deepEqual(validateInput(["-n0", "6", "head.js"]), expectedOutput);
+    assert.deepEqual(validateInput(input), expectedOutput);
   });
   it("should return a error message for alphanumeric option merged count", function() {
-    let expectedOutput = {
+    const input = ["-n3av", "head.js"];
+    const expectedOutput = {
       message: "head: illegal line count -- 3av",
       errorState: true
     };
-    assert.deepEqual(validateInput(["-n3av", "head.js"]), expectedOutput);
+    assert.deepEqual(validateInput(input), expectedOutput);
   });
   it("should return a error message for alphanumeric count", function() {
-    let expectedOutput = {
+    const input = ["-n", "3av", "head.js"];
+    const expectedOutput = {
       message: "head: illegal line count -- 3av",
       errorState: true
     };
-    assert.deepEqual(validateInput(["-n", "3av", "head.js"]), expectedOutput);
+    assert.deepEqual(validateInput(input), expectedOutput);
   });
 });
