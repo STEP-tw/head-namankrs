@@ -170,18 +170,17 @@ describe("formatContents", function() {
 });
 
 describe("formatAllContents", function() {
-  let readFileSync = x => x;
-  let existsSync = x => true;
-  let fs = { readFileSync, existsSync };
-  let file1 = "1\n2\n3\n4";
-  let file2 = "5\n6\n7";
-  let files = [file1, file2];
-  let expectedOutput = "==> 1\n2\n3\n4 <==\n3\n4\n==> 5\n6\n7 <==\n6\n7";
-  it("should return the formatted contents of all the given files", function() {
+  let fileContents = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
+  const readFileSync = mockReader("../file", fileContents);
+  const existsSync = mockValidator("../file");
+  const fs = { readFileSync, existsSync };
+  const files = ["../file", "../file"];
+  it("should return the formatted contents of all the given files with line count", function() {
+    const expectedOutput = "==> ../file <==\n11\n12\n==> ../file <==\n11\n12";
     deepEqual(formatAllContents(fs, getLines, 2, files), expectedOutput);
   });
-  it("should return the formatted contents of all the given files", function() {
-    let expectedOutput = "==> 1\n2\n3\n4 <==\n3\n4\n==> 5\n6\n7 <==\n6\n7";
+  it("should return the formatted contents of all the given files with character count", function() {
+    let expectedOutput = "==> ../file <==\n\n12\n==> ../file <==\n\n12";
     deepEqual(formatAllContents(fs, getCharacters, 3, files), expectedOutput);
   });
 });
