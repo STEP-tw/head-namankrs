@@ -186,40 +186,42 @@ describe("formatAllContents", function() {
 });
 
 describe("tail", function() {
-  let readFileSync = x => x;
-  let existsSync = x => true;
-  let fs = { readFileSync, existsSync };
+  const fileContents = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
+  const readFileSync = mockReader("../file", fileContents);
+  const existsSync = mockValidator("../file");
+  const fs = { readFileSync, existsSync };
+  it("should return last two lines when option is n and count is 2 for one file", function() {
+    let inputs = ["-n", "2", "../file"];
+    let expectedOutput = "11\n12";
+    deepEqual(tail(fs, inputs), expectedOutput);
+  });
   it("should return last two lines when option is n and count is 2 for more than one file", function() {
-    let file = "1\n2";
-    let inputs = ["-n", "2", file, file];
-    let expectedOutput = "==> 1\n2 <==\n1\n2\n==> 1\n2 <==\n1\n2";
+    let inputs = ["-n", "2", "../file", "../file"];
+    let expectedOutput = "==> ../file <==\n11\n12\n==> ../file <==\n11\n12";
+    deepEqual(tail(fs, inputs), expectedOutput);
+  });
+  it("should return last two characters when option is c and count is 2 for one file", function() {
+    let inputs = ["-c", "2", "../file"];
+    let expectedOutput = "12";
     deepEqual(tail(fs, inputs), expectedOutput);
   });
   it("should return last two characters when option is c and count is 2 for more than one file", function() {
-    let file = "1\n2";
-    let inputs = ["-c", "2", file, file];
-    let expectedOutput = "==> 1\n2 <==\n\n2\n==> 1\n2 <==\n\n2";
+    let inputs = ["-c", "2", "../file", "../file"];
+    let expectedOutput = "==> ../file <==\n12\n==> ../file <==\n12";
     deepEqual(tail(fs, inputs), expectedOutput);
   });
-  it("should return contents when single file is given", function() {
-    let file = "hello";
-    let inputs = ["-c", "2", file];
-    let expectedOutput = "lo";
+  it("should return last 2 lines when single file is given without option and count 2", function() {
+    let inputs = ["2", "../file"];
+    let expectedOutput = "11\n12";
     deepEqual(tail(fs, inputs), expectedOutput);
   });
   it("should return an error message for a single missing file", function() {
-    let file = "hello";
-    let inputs = ["-c", "2", file];
-    let existsSync = x => false;
-    let fs = { readFileSync, existsSync };
-    let expectedOutput = "tail: hello: No such file or directory";
+    let inputs = ["-c", "2", "../file1"];
+    let expectedOutput = "tail: ../file1: No such file or directory";
     deepEqual(tail(fs, inputs), expectedOutput);
   });
   it("should return an error message for invalid count", function() {
-    let file = "hello";
-    let inputs = ["-c", "2ac", file];
-    let existsSync = x => true;
-    let fs = { readFileSync, existsSync };
+    let inputs = ["-c", "2ac", "../file"];
     let expectedOutput = "tail: illegal offset -- 2ac";
     deepEqual(tail(fs, inputs), expectedOutput);
   });
