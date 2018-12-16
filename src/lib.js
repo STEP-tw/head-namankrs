@@ -1,5 +1,5 @@
-const { parseInput } = require("./parseInput.js");
-const { validateInput } = require("./validateInput.js");
+const { parseInput } = require("./inputParser");
+const { validateInput } = require("./inputValidator");
 
 const getCharacters = function(contents, endCount, initCount = 0) {
   return contents.slice(initCount, endCount);

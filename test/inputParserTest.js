@@ -1,5 +1,5 @@
 const assert = require("assert");
-const { parseInput } = require("../src/parseInput.js");
+const { parseInput } = require("../src/inputParser.js");
 describe("parseInput", function() {
   it("should return the default state when no option and count are provided", function() {
     const expectedOutput = {

@@ -1,4 +1,4 @@
-const { validateInput } = require("../src/validateInput.js");
+const { validateInput } = require("../src/inputValidator.js");
 const assert = require("assert");
 
 describe("validateInput", function() {
