@@ -146,28 +146,26 @@ describe("head", function() {
 });
 
 describe("formatContents", function() {
-  let readFileSync = x => x;
-  let existsSync = x => true;
+  let fileContents = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
+  const readFileSync = mockReader("../file", fileContents);
+  const existsSync = mockValidator("../file");
   let fs = { readFileSync, existsSync };
-  let file = "1\n2\n3\n4\n";
-  it("should return the content of the file after adding header", function() {
-    let expectedOutput = "==> 1\n2\n3\n4\n <==\n3\n4";
-    deepEqual(formatContents(fs, getLines, 2, file), expectedOutput);
+  it("should return the last lines of the file by count after adding header", function() {
+    let expectedOutput = "==> ../file <==\n11\n12";
+    deepEqual(formatContents(fs, getLines, 2, "../file"), expectedOutput);
   });
   it("should return the content of the file after adding header", function() {
-    let expectedOutput = "==> 1\n2\n3\n4\n <==\n\n3\n4";
-    deepEqual(formatContents(fs, getCharacters, 4, file), expectedOutput);
+    let expectedOutput = "==> ../file <==\n1\n12";
+    deepEqual(formatContents(fs, getCharacters, 4, "../file"), expectedOutput);
   });
   it("should return the entire content if count is greater than file length", function() {
-    let expectedOutput = "==> 1\n2\n3\n4\n <==\n1\n2\n3\n4";
-    deepEqual(formatContents(fs, getCharacters, 10, file), expectedOutput);
+    let expectedOutput =
+      "==> ../file <==\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
+    deepEqual(formatContents(fs, getCharacters, 30, "../file"), expectedOutput);
   });
   it("should return an error message if file name is invalid", function() {
-    let existsSync = x => false;
-    let fs = { readFileSync, existsSync };
-    let file = "hello";
-    let expectedOutput = "tail: hello: No such file or directory";
-    deepEqual(formatContents(fs, getLines, 2, file), expectedOutput);
+    let expectedOutput = "tail: ../file1: No such file or directory";
+    deepEqual(formatContents(fs, getLines, 2, "../file1"), expectedOutput);
   });
 });
 
