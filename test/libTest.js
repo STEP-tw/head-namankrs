@@ -54,26 +54,6 @@ describe("getLines", function() {
   });
 });
 
-describe("modifyContents", function() {
-  let fileContents = "1\n2\n3\n4";
-  const readFileSync = mockReader("../file", fileContents);
-  const existsSync = mockValidator("../file");
-  const fs = { readFileSync, existsSync };
-  it("should return the formatted single line of a file", function() {
-    let expectedOutput = "==> ../file <==\n1";
-    assert.equal(modifyContents(fs, getLines, 1, "../file"), expectedOutput);
-  });
-
-  it("should return the whole file if count is more than the number of lines in file", function() {
-    let expectedOutput = "==> ../file <==\n1\n2\n3\n4";
-    assert.equal(modifyContents(fs, getLines, 10, "../file"), expectedOutput);
-  });
-  it("should return an error message if file does not exist", function() {
-    let expectedOutput = "head: ../file1: No such file or directory";
-    assert.equal(modifyContents(fs, getLines, 1, "../file1"), expectedOutput);
-  });
-});
-
 describe("getContents", function() {
   let fileContents = "1\n2\n3\n4";
   const readFileSync = mockReader("../file", fileContents);
@@ -159,29 +139,59 @@ describe("formatContents", function() {
   it("should return the last lines of the file by count after adding header", function() {
     let expectedOutput = "==> ../file <==\n11\n12";
     assert.deepEqual(
-      formatContents(fs, getLines, 2, "../file"),
+      formatContents(fs, getLines, 2, "tail", "../file"),
       expectedOutput
     );
   });
-  it("should return the content of the file after adding header", function() {
+  it("should return the content of the file after adding header for tail command", function() {
     let expectedOutput = "==> ../file <==\n1\n12";
     assert.deepEqual(
-      formatContents(fs, getCharacters, 4, "../file"),
+      formatContents(fs, getCharacters, 4, "tail", "../file"),
       expectedOutput
     );
   });
-  it("should return the entire content if count is greater than file length", function() {
+  it("should return the entire content if count is greater than file length for tail command", function() {
     let expectedOutput =
       "==> ../file <==\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
     assert.deepEqual(
-      formatContents(fs, getCharacters, 30, "../file"),
+      formatContents(fs, getCharacters, 30, "tail", "../file"),
       expectedOutput
     );
   });
-  it("should return an error message if file name is invalid", function() {
+  it("should return an error message if file name is invalid for tail command", function() {
     let expectedOutput = "tail: ../file1: No such file or directory";
     assert.deepEqual(
-      formatContents(fs, getLines, 2, "../file1"),
+      formatContents(fs, getLines, 2, "tail", "../file1"),
+      expectedOutput
+    );
+  });
+
+  it("should return the first lines of the file by count after adding header for head command", function() {
+    let expectedOutput = "==> ../file <==\n1\n2";
+    assert.deepEqual(
+      formatContents(fs, getLines, 2, "head", "../file"),
+      expectedOutput
+    );
+  });
+  it("should return the content of the file after adding header for head command", function() {
+    let expectedOutput = "==> ../file <==\n1\n2\n";
+    assert.deepEqual(
+      formatContents(fs, getCharacters, 4, "head", "../file"),
+      expectedOutput
+    );
+  });
+  it("should return the entire content if count is greater than file length for head command", function() {
+    let expectedOutput =
+      "==> ../file <==\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
+    assert.deepEqual(
+      formatContents(fs, getCharacters, 30, "head", "../file"),
+      expectedOutput
+    );
+  });
+  it("should return an error message if file name is invalid for head command", function() {
+    let expectedOutput = "head: ../file1: No such file or directory";
+    assert.deepEqual(
+      formatContents(fs, getLines, 2, "head", "../file1"),
       expectedOutput
     );
   });

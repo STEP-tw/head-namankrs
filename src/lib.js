@@ -14,32 +14,32 @@ const addHeader = function(header, contents) {
   return `==> ${header} <==\n${contents}`;
 };
 
-const modifyContents = function(fs, mapper, count, filePath) {
-  let modifiedContents = `head: ${filePath}: No such file or directory`;
+const formatContents = function(fs, mapper, count, command, filePath) {
+  let formattedContents = `${command}: ${filePath}: No such file or directory`;
   if (fs.existsSync(filePath)) {
     let contents = fs.readFileSync(filePath, "utf8");
-    if (contents.endsWith("\n")) {
-      contents = trimLastLine(contents);
-    }
-    modifiedContents = mapper(contents, count);
-    modifiedContents = addHeader(filePath, modifiedContents);
-  }
-  return modifiedContents;
-};
-
-const formatContents = function(fs, mapper, count, filePath) {
-  let formattedContents = `tail: ${filePath}: No such file or directory`;
-  if (fs.existsSync(filePath)) {
-    let contents = fs.readFileSync(filePath, "utf8");
-    if (contents.endsWith("\n")) {
-      contents = trimLastLine(contents);
-    }
     let { endIndex, initIndex } = getCounts(contents, mapper, count);
-    if (count > endIndex) initIndex = 0;
-    formattedContents = mapper(contents, endIndex, initIndex);
+    if (contents.endsWith("\n")) {
+      contents = trimLastLine(contents);
+    }
+    const commands = {
+      head: mapper(contents, count),
+      tail: mapper(contents, endIndex, initIndex)
+    };
+    formattedContents = commands[command];
     formattedContents = addHeader(filePath, formattedContents);
   }
   return formattedContents;
+};
+
+const formatAllContents = function(fs, mapper, count, files) {
+  let callback = formatContents.bind(null, fs, mapper, count, "tail");
+  return files.map(callback).join("\n");
+};
+
+const getContents = function(fs, mapper, count, files) {
+  let callback = formatContents.bind(null, fs, mapper, count, "head");
+  return files.map(callback).join("\n");
 };
 
 const isNumber = x => !isNaN(x);
@@ -50,7 +50,7 @@ const extractDetails = function(inputs) {
   let mapper = func[option];
   return { files, count, mapper };
 };
-``;
+
 const removeHeader = function(contents) {
   let trimmedContents = contents.split("\n");
   trimmedContents.shift();
@@ -89,16 +89,6 @@ const getCounts = function(contents, mapper, count) {
   return { endIndex, initIndex };
 };
 
-const formatAllContents = function(fs, mapper, count, files) {
-  let callback = formatContents.bind(null, fs, mapper, count);
-  return files.map(callback).join("\n");
-};
-
-const getContents = function(fs, mapper, count, files) {
-  let callback = modifyContents.bind(null, fs, mapper, count);
-  return files.map(callback).join("\n");
-};
-
 const tail = function(inputs, fs) {
   let { files, count, mapper } = extractDetails(inputs);
   let finalContents = formatAllContents(fs, mapper, count, files);
@@ -117,7 +107,6 @@ const tail = function(inputs, fs) {
 module.exports = {
   getCharacters,
   getLines,
-  modifyContents,
   getContents,
   head,
   formatContents,
