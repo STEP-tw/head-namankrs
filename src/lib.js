@@ -1,13 +1,13 @@
 const { parseInput } = require("./inputParser");
 const { validateInput } = require("./inputValidator");
 
-const getCharacters = function(contents, endCount, initCount = 0) {
-  return contents.slice(initCount, endCount);
+const getCharacters = function(contents, endIndex, initIndex = 0) {
+  return contents.slice(initIndex, endIndex);
 };
 
-const getLines = function(contents, endCount, initCount = 0) {
+const getLines = function(contents, endIndex, initIndex = 0) {
   let lines = contents.split("\n");
-  return lines.slice(initCount, endCount).join("\n");
+  return lines.slice(initIndex, endIndex).join("\n");
 };
 
 const addHeader = function(header, contents) {
@@ -31,9 +31,9 @@ const formatContents = function(fs, mapper, count, filePath) {
     if (contents.endsWith("\n")) {
       contents = trimLastLine(contents);
     }
-    let { endCount, initCount } = getCounts(contents, mapper, count);
-    if (count > endCount) initCount = 0;
-    formattedContents = mapper(contents, endCount, initCount);
+    let { endIndex, initIndex } = getCounts(contents, mapper, count);
+    if (count > endIndex) initIndex = 0;
+    formattedContents = mapper(contents, endIndex, initIndex);
     formattedContents = addHeader(filePath, formattedContents);
   }
   return formattedContents;
@@ -76,14 +76,14 @@ const trimLastLine = function(contents) {
 };
 
 const getCounts = function(contents, mapper, count) {
-  let endCount = contents.length;
-  let initCount = endCount - count;
+  let endIndex = contents.length;
+  let initIndex = endIndex - count;
   if (mapper === getLines) {
-    endCount = contents.split("\n").length;
-    initCount = endCount - count;
+    endIndex = contents.split("\n").length;
+    initIndex = endIndex - count;
   }
-  if (count > endCount) initCount = 0;
-  return { endCount, initCount };
+  if (count > endIndex) initIndex = 0;
+  return { endIndex, initIndex };
 };
 
 const formatAllContents = function(fs, mapper, count, files) {
