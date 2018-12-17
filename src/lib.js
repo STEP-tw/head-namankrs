@@ -41,7 +41,7 @@ const formatContents = function(fs, mapper, count, filePath) {
 
 const isNumber = x => !isNaN(x);
 
-const getDetails = function(inputs) {
+const extractDetails = function(inputs) {
   let { option, count, files } = parseInput(inputs);
   let func = { "-c": getCharacters, "-n": getLines };
   let mapper = func[option];
@@ -58,7 +58,7 @@ const head = function(inputs, fs) {
   let { errorState, message } = validateInput(inputs);
   if (errorState) return message;
 
-  let { files, count, mapper } = getDetails(inputs);
+  let { files, count, mapper } = extractDetails(inputs);
   let contents = getContents(fs, mapper, count, files);
 
   if (files.length > 1) return contents;
@@ -97,7 +97,7 @@ const getContents = function(fs, mapper, count, files) {
 };
 
 const tail = function(inputs, fs) {
-  let { files, count, mapper } = getDetails(inputs);
+  let { files, count, mapper } = extractDetails(inputs);
   let finalContents = formatAllContents(fs, mapper, count, files);
 
   if (!isNumber(count)) {
