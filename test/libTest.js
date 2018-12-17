@@ -2,8 +2,6 @@ const assert = require("assert");
 const {
   getCharacters,
   getLines,
-  modifyContents,
-  getContents,
   head,
   formatContents,
   formatAllContents,
@@ -54,30 +52,30 @@ describe("getLines", function() {
   });
 });
 
-describe("getContents", function() {
-  let fileContents = "1\n2\n3\n4";
-  const readFileSync = mockReader("../file", fileContents);
-  const existsSync = mockValidator("../file");
-  let fs = { readFileSync, existsSync };
-  let files = ["../file", "../file"];
-  it("should return the formatted contents of an array of files", function() {
-    let expectedOutput = "==> ../file <==\n1\n2\n==> ../file <==\n1\n2";
-    assert.deepEqual(getContents(fs, getLines, 2, files), expectedOutput);
-  });
-  it("should return an error message for single missing file", function() {
-    let expectedOutput = "head: ../file1: No such file or directory";
-    assert.deepEqual(
-      getContents(fs, getLines, 1, ["../file1"]),
-      expectedOutput
-    );
-  });
-  it("should return an error message for more than one missing file", function() {
-    files = ["../file1", "../file2"];
-    let expectedOutput =
-      "head: ../file1: No such file or directory\nhead: ../file2: No such file or directory";
-    assert.deepEqual(getContents(fs, getLines, 1, files), expectedOutput);
-  });
-});
+// describe("getContents", function() {
+//   let fileContents = "1\n2\n3\n4";
+//   const readFileSync = mockReader("../file", fileContents);
+//   const existsSync = mockValidator("../file");
+//   let fs = { readFileSync, existsSync };
+//   let files = ["../file", "../file"];
+//   it("should return the formatted contents of an array of files", function() {
+//     let expectedOutput = "==> ../file <==\n1\n2\n==> ../file <==\n1\n2";
+//     assert.deepEqual(getContents(fs, getLines, 2, files), expectedOutput);
+//   });
+//   it("should return an error message for single missing file", function() {
+//     let expectedOutput = "head: ../file1: No such file or directory";
+//     assert.deepEqual(
+//       getContents(fs, getLines, 1, ["../file1"]),
+//       expectedOutput
+//     );
+//   });
+//   it("should return an error message for more than one missing file", function() {
+//     files = ["../file1", "../file2"];
+//     let expectedOutput =
+//       "head: ../file1: No such file or directory\nhead: ../file2: No such file or directory";
+//     assert.deepEqual(getContents(fs, getLines, 1, files), expectedOutput);
+//   });
+// });
 
 describe("head", function() {
   let fileContents = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
@@ -203,14 +201,31 @@ describe("formatAllContents", function() {
   const existsSync = mockValidator("../file");
   const fs = { readFileSync, existsSync };
   const files = ["../file", "../file"];
-  it("should return the formatted contents of all the given files with line count", function() {
+  it("should return the formatted contents of all the given files with line count for tail command", function() {
     const expectedOutput = "==> ../file <==\n11\n12\n==> ../file <==\n11\n12";
-    assert.deepEqual(formatAllContents(fs, getLines, 2, files), expectedOutput);
+    assert.deepEqual(
+      formatAllContents(fs, getLines, 2, files, "tail"),
+      expectedOutput
+    );
   });
-  it("should return the formatted contents of all the given files with character count", function() {
+  it("should return the formatted contents of all the given files with character count for tail command", function() {
     let expectedOutput = "==> ../file <==\n\n12\n==> ../file <==\n\n12";
     assert.deepEqual(
-      formatAllContents(fs, getCharacters, 3, files),
+      formatAllContents(fs, getCharacters, 3, files, "tail"),
+      expectedOutput
+    );
+  });
+  it("should return the formatted contents of all the given files with line count for tail command", function() {
+    const expectedOutput = "==> ../file <==\n1\n2\n==> ../file <==\n1\n2";
+    assert.deepEqual(
+      formatAllContents(fs, getLines, 2, files, "head"),
+      expectedOutput
+    );
+  });
+  it("should return the formatted contents of all the given files with character count for tail command", function() {
+    let expectedOutput = "==> ../file <==\n1\n2\n==> ../file <==\n1\n2";
+    assert.deepEqual(
+      formatAllContents(fs, getCharacters, 3, files, "head"),
       expectedOutput
     );
   });
