@@ -54,14 +54,14 @@ const getContents = function(filePath, fs) {
   return contents;
 };
 
-const filterContent = function(fs, mapper, count, command, filePath) {
+const filterContent = function(fs, fetchContents, count, command, filePath) {
   let formattedContents = `${command}: ${filePath}: No such file or directory`;
   if (fs.existsSync(filePath)) {
     let contents = getContents(filePath, fs);
-    let { endIndex, initIndex } = getCounts(contents, mapper, count);
+    let { endIndex, initIndex } = getCounts(contents, fetchContents, count);
     const commands = {
-      head: mapper(contents, count),
-      tail: mapper(contents, endIndex, initIndex)
+      head: fetchContents(contents, count),
+      tail: fetchContents(contents, endIndex, initIndex)
     };
     formattedContents = commands[command];
     formattedContents = addHeader(filePath, formattedContents);
