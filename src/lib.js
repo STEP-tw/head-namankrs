@@ -10,12 +10,16 @@ const getLines = function(contents, endCount, initCount = 0) {
   return lines.slice(initCount, endCount).join("\n");
 };
 
+const addHeader = function(header, contents) {
+  return `==> ${header} <==\n${contents}`;
+};
+
 const modifyContents = function(fs, mapper, count, filePath) {
   let modifiedContents = `head: ${filePath}: No such file or directory`;
   if (fs.existsSync(filePath)) {
     let contents = fs.readFileSync(filePath, "utf8");
     modifiedContents = mapper(contents, count);
-    modifiedContents = `==> ${filePath} <==\n${modifiedContents}`;
+    modifiedContents = addHeader(filePath, modifiedContents);
   }
   return modifiedContents;
 };
@@ -30,7 +34,7 @@ const formatContents = function(fs, mapper, count, filePath) {
     let { endCount, initCount } = getCounts(contents, mapper, count);
     if (count > endCount) initCount = 0;
     formattedContents = mapper(contents, endCount, initCount);
-    formattedContents = `==> ${filePath} <==\n${formattedContents}`;
+    formattedContents = addHeader(filePath, formattedContents);
   }
   return formattedContents;
 };
