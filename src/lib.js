@@ -29,7 +29,7 @@ const formatContents = function(fs, mapper, count, filePath) {
   if (fs.existsSync(filePath)) {
     let contents = fs.readFileSync(filePath, "utf8");
     if (contents.endsWith("\n")) {
-      contents = trimEnd(contents);
+      contents = trimLastLine(contents);
     }
     let { endCount, initCount } = getCounts(contents, mapper, count);
     if (count > endCount) initCount = 0;
@@ -69,7 +69,7 @@ const head = function(fs, inputs) {
   return contents;
 };
 
-const trimEnd = function(contents) {
+const trimLastLine = function(contents) {
   contents = contents.split("\n");
   contents.pop();
   return contents.join("\n");
