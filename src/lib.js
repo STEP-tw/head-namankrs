@@ -35,7 +35,7 @@ const formatContents = function(fs, mapper, count, filePath) {
   return formattedContents;
 };
 
-const isCountValid = x => !isNaN(x);
+const isNumber = x => !isNaN(x);
 
 const getDetails = function(inputs) {
   let { option, count, files } = parseInput(inputs);
@@ -96,7 +96,7 @@ const tail = function(fs, inputs) {
   let { files, count, mapper } = getDetails(inputs);
   let finalContents = formatAllContents(fs, mapper, count, files);
 
-  if (!isCountValid(count)) {
+  if (!isNumber(count)) {
     return `tail: illegal offset -- ${count}`;
   }
   if (files.length > 1) return finalContents;
