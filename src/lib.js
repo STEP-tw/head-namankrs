@@ -18,6 +18,9 @@ const modifyContents = function(fs, mapper, count, filePath) {
   let modifiedContents = `head: ${filePath}: No such file or directory`;
   if (fs.existsSync(filePath)) {
     let contents = fs.readFileSync(filePath, "utf8");
+    if (contents.endsWith("\n")) {
+      contents = trimLastLine(contents);
+    }
     modifiedContents = mapper(contents, count);
     modifiedContents = addHeader(filePath, modifiedContents);
   }
