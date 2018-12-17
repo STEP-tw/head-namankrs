@@ -105,49 +105,49 @@ describe("head", function() {
   const existsSync = mockValidator("../file");
   let fs = { readFileSync, existsSync };
   it("should return 1 lines of text when option is -n and count is 1", function() {
-    assert.deepEqual(head(fs, ["-n", "1", "../file"]), 1);
+    assert.deepEqual(head(["-n", "1", "../file"], fs), 1);
   });
   it("should return the contents seperated with header for two files", function() {
     let expectedOutput = "==> ../file <==\n1\n==> ../file <==\n1";
     assert.deepEqual(
-      head(fs, ["-n", "1", "../file", "../file"]),
+      head(["-n", "1", "../file", "../file"], fs),
       expectedOutput
     );
   });
   it("should return 5 characters of text when option is -c and count is 5", function() {
     let expectedOutput = "1\n2\n3";
-    assert.deepEqual(head(fs, ["-c", "5", "../file"]), expectedOutput);
+    assert.deepEqual(head(["-c", "5", "../file"], fs), expectedOutput);
   });
   it("should return first 10 lines when no option is given", function() {
     let expectedOutput = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10";
-    assert.deepEqual(head(fs, ["../file"]), expectedOutput);
+    assert.deepEqual(head(["../file"], fs), expectedOutput);
   });
   it("should return error message when -0 is given as option", function() {
     let expectedOutput = "head: illegal line count -- 0";
-    assert.deepEqual(head(fs, ["-0", "../file"]), expectedOutput);
+    assert.deepEqual(head(["-0", "../file"], fs), expectedOutput);
   });
   it("should return a error message when option is other than n or c", function() {
     let expectedOutput = `head: illegal option -- v\nusage: head [-n lines | -c bytes] [file ...]`;
-    assert.deepEqual(head(fs, ["-v", "5", "../file"]), expectedOutput);
+    assert.deepEqual(head(["-v", "5", "../file"], fs), expectedOutput);
   });
   it("should return an error message with mentioning first alphabet if option is a word", function() {
     let expectedOutput = `head: illegal option -- h\nusage: head [-n lines | -c bytes] [file ...]`;
-    assert.deepEqual(head(fs, ["-hello", "5", "../file"]), expectedOutput);
+    assert.deepEqual(head(["-hello", "5", "../file"], fs), expectedOutput);
   });
   it("should return a error message when count is given as 0", function() {
     assert.deepEqual(
-      head(fs, ["-n0", "6", "../file"]),
+      head(["-n0", "6", "../file"], fs),
       "head: illegal line count -- 0"
     );
   });
   it("should return a error message for alphanumeric count", function() {
     let expectedOutput = "head: illegal line count -- 3av";
-    assert.deepEqual(head(fs, ["-n3av", "../file"]), expectedOutput);
-    assert.deepEqual(head(fs, ["-n", "3av", "../file"]), expectedOutput);
+    assert.deepEqual(head(["-n3av", "../file"], fs), expectedOutput);
+    assert.deepEqual(head(["-n", "3av", "../file"], fs), expectedOutput);
   });
   it("should return an error message for single missing file", function() {
     let expectedOutput = "head: ../file1: No such file or directory";
-    assert.deepEqual(head(fs, ["-n", "1", "../file1"]), expectedOutput);
+    assert.deepEqual(head(["-n", "1", "../file1"], fs), expectedOutput);
   });
 });
 

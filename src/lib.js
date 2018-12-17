@@ -54,7 +54,7 @@ const removeHeader = function(contents) {
   return trimmedContents.join("\n");
 };
 
-const head = function(fs, inputs) {
+const head = function(inputs, fs) {
   let { errorState, message } = validateInput(inputs);
   if (errorState) return message;
 
