@@ -20,9 +20,19 @@ const modifyContents = function(fs, mapper, count, filePath) {
   return modifiedContents;
 };
 
-const getContents = function(fs, mapper, count, files) {
-  let callback = modifyContents.bind(null, fs, mapper, count);
-  return files.map(callback).join("\n");
+const formatContents = function(fs, mapper, count, filePath) {
+  let formattedContents = `tail: ${filePath}: No such file or directory`;
+  if (fs.existsSync(filePath)) {
+    let contents = fs.readFileSync(filePath, "utf8");
+    if (contents.endsWith("\n")) {
+      contents = trimEnd(contents);
+    }
+    let { endCount, initCount } = getCounts(contents, mapper, count);
+    if (count > endCount) initCount = 0;
+    formattedContents = mapper(contents, endCount, initCount);
+    formattedContents = `==> ${filePath} <==\n${formattedContents}`;
+  }
+  return formattedContents;
 };
 
 const isCountValid = x => !isNaN(x);
@@ -72,23 +82,13 @@ const getCounts = function(contents, mapper, count) {
   return { endCount, initCount };
 };
 
-const formatContents = function(fs, mapper, count, file) {
-  let formattedContents = `tail: ${file}: No such file or directory`;
-  if (fs.existsSync(file)) {
-    let contents = fs.readFileSync(file, "utf8");
-    if (contents.endsWith("\n")) {
-      contents = trimEnd(contents);
-    }
-    let { endCount, initCount } = getCounts(contents, mapper, count);
-    if (count > endCount) initCount = 0;
-    formattedContents = mapper(contents, endCount, initCount);
-    formattedContents = `==> ${file} <==\n${formattedContents}`;
-  }
-  return formattedContents;
-};
-
 const formatAllContents = function(fs, mapper, count, files) {
   let callback = formatContents.bind(null, fs, mapper, count);
+  return files.map(callback).join("\n");
+};
+
+const getContents = function(fs, mapper, count, files) {
+  let callback = modifyContents.bind(null, fs, mapper, count);
   return files.map(callback).join("\n");
 };
 
