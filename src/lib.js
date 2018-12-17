@@ -64,7 +64,7 @@ const trimEnd = function(contents) {
 const getCounts = function(contents, mapper, count) {
   let endCount = contents.length;
   let initCount = endCount - count;
-  if (mapper == getLines) {
+  if (mapper === getLines) {
     endCount = contents.split("\n").length;
     initCount = endCount - count;
   }

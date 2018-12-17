@@ -12,7 +12,7 @@ const {
 
 const mockReader = function(expectedFile, expectedContent) {
   return function(actualFile) {
-    if (actualFile == expectedFile) {
+    if (actualFile === expectedFile) {
       return expectedContent;
     }
   };
@@ -20,7 +20,7 @@ const mockReader = function(expectedFile, expectedContent) {
 
 const mockValidator = function(expectedFile) {
   return function(actualFile) {
-    return actualFile == expectedFile;
+    return actualFile === expectedFile;
   };
 };
 

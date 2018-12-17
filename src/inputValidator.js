@@ -1,18 +1,18 @@
-const isCountInvalid = x => x == "-0";
+const isCountInvalid = x => x === "-0";
 
 const lacksOption = x => !x.includes("-c") && !x.includes("-n");
 
-const isAlphanumeric = x => isNaN(x) && x[0] == "-";
+const isAlphanumeric = x => isNaN(x) && x[0] === "-";
 
 const isOptionInvalid = x => lacksOption(x) && isAlphanumeric(x);
 
-const isAlphabetOrZero = x => isNaN(x.slice(2)) || x.slice(2) == "0";
+const isAlphabetOrZero = x => isNaN(x.slice(2)) || x.slice(2) === "0";
 
-const isValidOption = x => x.slice(0, 2) == "-n" || x.slice(0, 2) == "-c";
+const isValidOption = x => x.slice(0, 2) === "-n" || x.slice(0, 2) === "-c";
 
 const isCountZero = x => isAlphabetOrZero(x) && isValidOption(x);
 
-const hasOption = x => x == "-n" || x == "-c";
+const hasOption = x => x === "-n" || x === "-c";
 
 const hasInvalidCount = x => x < 1 || isNaN(x);
 

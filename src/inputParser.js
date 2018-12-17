@@ -1,6 +1,6 @@
-const isOptionValid = x => x == "-n" || x == "-c";
+const isOptionValid = x => x === "-n" || x === "-c";
 
-const isOption = x => x[0] == "-" && isNaN(x[1]);
+const isOption = x => x[0] === "-" && isNaN(x[1]);
 const isOptionAndCount = x => isOption(x) && x.length > 2;
 
 const isCountValid = x => !isNaN(x);
