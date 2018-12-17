@@ -64,7 +64,7 @@ const filterContent = function(fs, mapper, count, command, filePath) {
   return formattedContents;
 };
 
-const formatAllContents = function(fs, mapper, count, files, command) {
+const runCommand = function(fs, mapper, count, files, command) {
   let callback = filterContent.bind(null, fs, mapper, count, command);
   return files.map(callback).join("\n");
 };
@@ -74,7 +74,7 @@ const head = function(inputs, fs) {
   if (errorState) return message;
 
   let { files, count, mapper } = extractDetails(inputs);
-  let contents = formatAllContents(fs, mapper, count, files, "head");
+  let contents = runCommand(fs, mapper, count, files, "head");
 
   if (files.length > 1) return contents;
 
@@ -86,7 +86,7 @@ const head = function(inputs, fs) {
 
 const tail = function(inputs, fs) {
   let { files, count, mapper } = extractDetails(inputs);
-  let finalContents = formatAllContents(fs, mapper, count, files, "tail");
+  let finalContents = runCommand(fs, mapper, count, files, "tail");
 
   if (!isNumber(count)) {
     return `tail: illegal offset -- ${count}`;
@@ -104,6 +104,6 @@ module.exports = {
   getLines,
   head,
   filterContent,
-  formatAllContents,
+  runCommand,
   tail
 };

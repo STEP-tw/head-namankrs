@@ -4,7 +4,7 @@ const {
   getLines,
   head,
   filterContent,
-  formatAllContents,
+  runCommand,
   tail
 } = require("../src/lib.js");
 
@@ -170,7 +170,7 @@ describe("filterContent", function() {
   });
 });
 
-describe("formatAllContents", function() {
+describe("runCommand", function() {
   let fileContents = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
   const readFileSync = mockReader("../file", fileContents);
   const existsSync = mockValidator("../file");
@@ -179,28 +179,28 @@ describe("formatAllContents", function() {
   it("should return the formatted contents of all the given files with line count for tail command", function() {
     const expectedOutput = "==> ../file <==\n11\n12\n==> ../file <==\n11\n12";
     assert.deepEqual(
-      formatAllContents(fs, getLines, 2, files, "tail"),
+      runCommand(fs, getLines, 2, files, "tail"),
       expectedOutput
     );
   });
   it("should return the formatted contents of all the given files with character count for tail command", function() {
     let expectedOutput = "==> ../file <==\n\n12\n==> ../file <==\n\n12";
     assert.deepEqual(
-      formatAllContents(fs, getCharacters, 3, files, "tail"),
+      runCommand(fs, getCharacters, 3, files, "tail"),
       expectedOutput
     );
   });
   it("should return the formatted contents of all the given files with line count for tail command", function() {
     const expectedOutput = "==> ../file <==\n1\n2\n==> ../file <==\n1\n2";
     assert.deepEqual(
-      formatAllContents(fs, getLines, 2, files, "head"),
+      runCommand(fs, getLines, 2, files, "head"),
       expectedOutput
     );
   });
   it("should return the formatted contents of all the given files with character count for tail command", function() {
     let expectedOutput = "==> ../file <==\n1\n2\n==> ../file <==\n1\n2";
     assert.deepEqual(
-      formatAllContents(fs, getCharacters, 3, files, "head"),
+      runCommand(fs, getCharacters, 3, files, "head"),
       expectedOutput
     );
   });
