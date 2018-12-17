@@ -46,14 +46,19 @@ const getCounts = function(contents, mapper, count) {
   return { endIndex, initIndex };
 };
 
+const getContents = function(filePath, fs) {
+  let contents = fs.readFileSync(filePath, "utf8");
+  if (contents.endsWith("\n")) {
+    contents = trimLastLine(contents);
+  }
+  return contents;
+};
+
 const filterContent = function(fs, mapper, count, command, filePath) {
   let formattedContents = `${command}: ${filePath}: No such file or directory`;
   if (fs.existsSync(filePath)) {
-    let contents = fs.readFileSync(filePath, "utf8");
+    let contents = getContents(filePath, fs);
     let { endIndex, initIndex } = getCounts(contents, mapper, count);
-    if (contents.endsWith("\n")) {
-      contents = trimLastLine(contents);
-    }
     const commands = {
       head: mapper(contents, count),
       tail: mapper(contents, endIndex, initIndex)
