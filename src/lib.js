@@ -47,7 +47,7 @@ const getDetails = function(inputs) {
   let mapper = func[option];
   return { files, count, mapper };
 };
-
+``;
 const removeHeader = function(contents) {
   let trimmedContents = contents.split("\n");
   trimmedContents.shift();
@@ -96,7 +96,7 @@ const getContents = function(fs, mapper, count, files) {
   return files.map(callback).join("\n");
 };
 
-const tail = function(fs, inputs) {
+const tail = function(inputs, fs) {
   let { files, count, mapper } = getDetails(inputs);
   let finalContents = formatAllContents(fs, mapper, count, files);
 

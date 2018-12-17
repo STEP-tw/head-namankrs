@@ -214,36 +214,36 @@ describe("tail", function() {
   it("should return last two lines when option is n and count is 2 for one file", function() {
     let inputs = ["-n", "2", "../file"];
     let expectedOutput = "11\n12";
-    assert.deepEqual(tail(fs, inputs), expectedOutput);
+    assert.deepEqual(tail(inputs, fs), expectedOutput);
   });
   it("should return last two lines when option is n and count is 2 for more than one file", function() {
     let inputs = ["-n", "2", "../file", "../file"];
     let expectedOutput = "==> ../file <==\n11\n12\n==> ../file <==\n11\n12";
-    assert.deepEqual(tail(fs, inputs), expectedOutput);
+    assert.deepEqual(tail(inputs, fs), expectedOutput);
   });
   it("should return last two characters when option is c and count is 2 for one file", function() {
     let inputs = ["-c", "2", "../file"];
     let expectedOutput = "12";
-    assert.deepEqual(tail(fs, inputs), expectedOutput);
+    assert.deepEqual(tail(inputs, fs), expectedOutput);
   });
   it("should return last two characters when option is c and count is 2 for more than one file", function() {
     let inputs = ["-c", "2", "../file", "../file"];
     let expectedOutput = "==> ../file <==\n12\n==> ../file <==\n12";
-    assert.deepEqual(tail(fs, inputs), expectedOutput);
+    assert.deepEqual(tail(inputs, fs), expectedOutput);
   });
   it("should return last 2 lines when single file is given without option and count 2", function() {
     let inputs = ["2", "../file"];
     let expectedOutput = "11\n12";
-    assert.deepEqual(tail(fs, inputs), expectedOutput);
+    assert.deepEqual(tail(inputs, fs), expectedOutput);
   });
   it("should return an error message for a single missing file", function() {
     let inputs = ["-c", "2", "../file1"];
     let expectedOutput = "tail: ../file1: No such file or directory";
-    assert.deepEqual(tail(fs, inputs), expectedOutput);
+    assert.deepEqual(tail(inputs, fs), expectedOutput);
   });
   it("should return an error message for invalid count", function() {
     let inputs = ["-c", "2ac", "../file"];
     let expectedOutput = "tail: illegal offset -- 2ac";
-    assert.deepEqual(tail(fs, inputs), expectedOutput);
+    assert.deepEqual(tail(inputs, fs), expectedOutput);
   });
 });
