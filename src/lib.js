@@ -17,8 +17,8 @@ const addHeader = function(header, contents) {
 const extractDetails = function(inputs) {
   let { option, count, files } = parseInput(inputs);
   let func = { "-c": getCharacters, "-n": getLines };
-  let mapper = func[option];
-  return { files, count, mapper };
+  let fetchContent = func[option];
+  return { files, count, fetchContent };
 };
 
 const removeHeader = function(contents) {
@@ -35,10 +35,10 @@ const trimLastLine = function(contents) {
   return contents.join("\n");
 };
 
-const getCounts = function(contents, mapper, count) {
+const getCounts = function(contents, fetchContent, count) {
   let endIndex = contents.length;
   let initIndex = endIndex - count;
-  if (mapper === getLines) {
+  if (fetchContent === getLines) {
     endIndex = contents.split("\n").length;
     initIndex = endIndex - count;
   }
@@ -54,14 +54,14 @@ const getContents = function(filePath, fs) {
   return contents;
 };
 
-const filterContent = function(fs, mapper, count, command, filePath) {
+const filterContent = function(fs, fetchContent, count, command, filePath) {
   let formattedContents = `${command}: ${filePath}: No such file or directory`;
   if (fs.existsSync(filePath)) {
     let contents = getContents(filePath, fs);
-    let { endIndex, initIndex } = getCounts(contents, mapper, count);
+    let { endIndex, initIndex } = getCounts(contents, fetchContent, count);
     const commands = {
-      head: mapper(contents, count),
-      tail: mapper(contents, endIndex, initIndex)
+      head: fetchContent(contents, count),
+      tail: fetchContent(contents, endIndex, initIndex)
     };
     formattedContents = commands[command];
     formattedContents = addHeader(filePath, formattedContents);
@@ -69,8 +69,8 @@ const filterContent = function(fs, mapper, count, command, filePath) {
   return formattedContents;
 };
 
-const runCommand = function(fs, mapper, count, files, command) {
-  let callback = filterContent.bind(null, fs, mapper, count, command);
+const runCommand = function(fs, fetchContent, count, files, command) {
+  let callback = filterContent.bind(null, fs, fetchContent, count, command);
   return files.map(callback).join("\n");
 };
 
@@ -78,8 +78,8 @@ const head = function(inputs, fs) {
   let { errorState, message } = validateInput(inputs);
   if (errorState) return message;
 
-  let { files, count, mapper } = extractDetails(inputs);
-  let contents = runCommand(fs, mapper, count, files, "head");
+  let { files, count, fetchContent } = extractDetails(inputs);
+  let contents = runCommand(fs, fetchContent, count, files, "head");
 
   if (files.length > 1) return contents;
 
@@ -90,8 +90,8 @@ const head = function(inputs, fs) {
 };
 
 const tail = function(inputs, fs) {
-  let { files, count, mapper } = extractDetails(inputs);
-  let finalContents = runCommand(fs, mapper, count, files, "tail");
+  let { files, count, fetchContent } = extractDetails(inputs);
+  let finalContents = runCommand(fs, fetchContent, count, files, "tail");
 
   if (!isNumber(count)) {
     return `tail: illegal offset -- ${count}`;
