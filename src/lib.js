@@ -46,7 +46,7 @@ const getCounts = function(contents, mapper, count) {
   return { endIndex, initIndex };
 };
 
-const formatContents = function(fs, mapper, count, command, filePath) {
+const filterContent = function(fs, mapper, count, command, filePath) {
   let formattedContents = `${command}: ${filePath}: No such file or directory`;
   if (fs.existsSync(filePath)) {
     let contents = fs.readFileSync(filePath, "utf8");
@@ -65,14 +65,9 @@ const formatContents = function(fs, mapper, count, command, filePath) {
 };
 
 const formatAllContents = function(fs, mapper, count, files, command) {
-  let callback = formatContents.bind(null, fs, mapper, count, command);
+  let callback = filterContent.bind(null, fs, mapper, count, command);
   return files.map(callback).join("\n");
 };
-
-// const getContents = function(fs, mapper, count, files) {
-//   let callback = formatContents.bind(null, fs, mapper, count, "head");
-//   return files.map(callback).join("\n");
-// };
 
 const head = function(inputs, fs) {
   let { errorState, message } = validateInput(inputs);
@@ -108,7 +103,7 @@ module.exports = {
   getCharacters,
   getLines,
   head,
-  formatContents,
+  filterContent,
   formatAllContents,
   tail
 };

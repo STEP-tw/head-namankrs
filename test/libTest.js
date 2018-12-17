@@ -3,7 +3,7 @@ const {
   getCharacters,
   getLines,
   head,
-  formatContents,
+  filterContent,
   formatAllContents,
   tail
 } = require("../src/lib.js");
@@ -51,31 +51,6 @@ describe("getLines", function() {
     assert.equal(getLines(input, 10), expectedOutput);
   });
 });
-
-// describe("getContents", function() {
-//   let fileContents = "1\n2\n3\n4";
-//   const readFileSync = mockReader("../file", fileContents);
-//   const existsSync = mockValidator("../file");
-//   let fs = { readFileSync, existsSync };
-//   let files = ["../file", "../file"];
-//   it("should return the formatted contents of an array of files", function() {
-//     let expectedOutput = "==> ../file <==\n1\n2\n==> ../file <==\n1\n2";
-//     assert.deepEqual(getContents(fs, getLines, 2, files), expectedOutput);
-//   });
-//   it("should return an error message for single missing file", function() {
-//     let expectedOutput = "head: ../file1: No such file or directory";
-//     assert.deepEqual(
-//       getContents(fs, getLines, 1, ["../file1"]),
-//       expectedOutput
-//     );
-//   });
-//   it("should return an error message for more than one missing file", function() {
-//     files = ["../file1", "../file2"];
-//     let expectedOutput =
-//       "head: ../file1: No such file or directory\nhead: ../file2: No such file or directory";
-//     assert.deepEqual(getContents(fs, getLines, 1, files), expectedOutput);
-//   });
-// });
 
 describe("head", function() {
   let fileContents = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
@@ -129,7 +104,7 @@ describe("head", function() {
   });
 });
 
-describe("formatContents", function() {
+describe("filterContent", function() {
   let fileContents = "1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
   const readFileSync = mockReader("../file", fileContents);
   const existsSync = mockValidator("../file");
@@ -137,14 +112,14 @@ describe("formatContents", function() {
   it("should return the last lines of the file by count after adding header", function() {
     let expectedOutput = "==> ../file <==\n11\n12";
     assert.deepEqual(
-      formatContents(fs, getLines, 2, "tail", "../file"),
+      filterContent(fs, getLines, 2, "tail", "../file"),
       expectedOutput
     );
   });
   it("should return the content of the file after adding header for tail command", function() {
     let expectedOutput = "==> ../file <==\n1\n12";
     assert.deepEqual(
-      formatContents(fs, getCharacters, 4, "tail", "../file"),
+      filterContent(fs, getCharacters, 4, "tail", "../file"),
       expectedOutput
     );
   });
@@ -152,14 +127,14 @@ describe("formatContents", function() {
     let expectedOutput =
       "==> ../file <==\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
     assert.deepEqual(
-      formatContents(fs, getCharacters, 30, "tail", "../file"),
+      filterContent(fs, getCharacters, 30, "tail", "../file"),
       expectedOutput
     );
   });
   it("should return an error message if file name is invalid for tail command", function() {
     let expectedOutput = "tail: ../file1: No such file or directory";
     assert.deepEqual(
-      formatContents(fs, getLines, 2, "tail", "../file1"),
+      filterContent(fs, getLines, 2, "tail", "../file1"),
       expectedOutput
     );
   });
@@ -167,14 +142,14 @@ describe("formatContents", function() {
   it("should return the first lines of the file by count after adding header for head command", function() {
     let expectedOutput = "==> ../file <==\n1\n2";
     assert.deepEqual(
-      formatContents(fs, getLines, 2, "head", "../file"),
+      filterContent(fs, getLines, 2, "head", "../file"),
       expectedOutput
     );
   });
   it("should return the content of the file after adding header for head command", function() {
     let expectedOutput = "==> ../file <==\n1\n2\n";
     assert.deepEqual(
-      formatContents(fs, getCharacters, 4, "head", "../file"),
+      filterContent(fs, getCharacters, 4, "head", "../file"),
       expectedOutput
     );
   });
@@ -182,14 +157,14 @@ describe("formatContents", function() {
     let expectedOutput =
       "==> ../file <==\n1\n2\n3\n4\n5\n6\n7\n8\n9\n10\n11\n12";
     assert.deepEqual(
-      formatContents(fs, getCharacters, 30, "head", "../file"),
+      filterContent(fs, getCharacters, 30, "head", "../file"),
       expectedOutput
     );
   });
   it("should return an error message if file name is invalid for head command", function() {
     let expectedOutput = "head: ../file1: No such file or directory";
     assert.deepEqual(
-      formatContents(fs, getLines, 2, "head", "../file1"),
+      filterContent(fs, getLines, 2, "head", "../file1"),
       expectedOutput
     );
   });
