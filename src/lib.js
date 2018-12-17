@@ -54,7 +54,13 @@ const getContent = function(filePath, fs) {
   return contents;
 };
 
-const filterContent = function(fs, fetchContents, count, command, filePath) {
+const getRequiredContent = function(
+  command,
+  fs,
+  fetchContents,
+  count,
+  filePath
+) {
   let formattedContents = `${command}: ${filePath}: No such file or directory`;
   if (fs.existsSync(filePath)) {
     let contents = getContent(filePath, fs);
@@ -64,8 +70,21 @@ const filterContent = function(fs, fetchContents, count, command, filePath) {
       tail: fetchContents(contents, endIndex, initIndex)
     };
     formattedContents = commands[command];
-    formattedContents = addHeader(filePath, formattedContents);
   }
+  return formattedContents;
+};
+
+const filterContent = function(fs, fetchContents, count, command, filePath) {
+  let formattedContents = getRequiredContent(
+    command,
+    fs,
+    fetchContents,
+    count,
+    filePath
+  );
+  if (fs.existsSync(filePath))
+    formattedContents = addHeader(filePath, formattedContents);
+
   return formattedContents;
 };
 
