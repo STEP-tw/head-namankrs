@@ -84,6 +84,15 @@ const runCommand = function(details) {
   return files.map(callback).join("\n");
 };
 
+const finaliseContents = function(files, contents, fs) {
+  if (files.length > 1) return contents;
+
+  if (fs.existsSync(files[0])) {
+    contents = removeHeader(contents);
+  }
+  return contents;
+};
+
 const head = function(inputs, fs) {
   let { errorState, message } = validateInput(inputs);
   if (errorState) return message;
@@ -91,13 +100,7 @@ const head = function(inputs, fs) {
   let { files, count, fetchContents } = extractDetails(inputs);
   let details = { fs, fetchContents, count, files, command: "head" };
   let contents = runCommand(details);
-
-  if (files.length > 1) return contents;
-
-  if (fs.existsSync(files[0])) {
-    contents = removeHeader(contents);
-  }
-  return contents;
+  return finaliseContents(files, contents, fs);
 };
 
 const tail = function(inputs, fs) {
@@ -108,12 +111,7 @@ const tail = function(inputs, fs) {
   if (!isNumber(count)) {
     return `tail: illegal offset -- ${count}`;
   }
-  if (files.length > 1) return contents;
-
-  if (fs.existsSync(files[0])) {
-    contents = removeHeader(contents);
-  }
-  return contents;
+  return finaliseContents(files, contents, fs);
 };
 
 module.exports = {
