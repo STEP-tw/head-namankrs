@@ -178,31 +178,47 @@ describe("runCommand", function() {
   const files = ["../file", "../file"];
   it("should return the formatted contents of all the given files with line count for tail command", function() {
     const expectedOutput = "==> ../file <==\n11\n12\n==> ../file <==\n11\n12";
-    assert.deepEqual(
-      runCommand(fs, getLines, 2, files, "tail"),
-      expectedOutput
-    );
+    const input = {
+      fs,
+      fetchContents: getLines,
+      count: 2,
+      files,
+      command: "tail"
+    };
+    assert.deepEqual(runCommand(input), expectedOutput);
   });
   it("should return the formatted contents of all the given files with character count for tail command", function() {
     let expectedOutput = "==> ../file <==\n\n12\n==> ../file <==\n\n12";
-    assert.deepEqual(
-      runCommand(fs, getCharacters, 3, files, "tail"),
-      expectedOutput
-    );
+    const input = {
+      fs,
+      fetchContents: getCharacters,
+      count: 3,
+      files,
+      command: "tail"
+    };
+    assert.deepEqual(runCommand(input), expectedOutput);
   });
-  it("should return the formatted contents of all the given files with line count for tail command", function() {
+  it("should return the formatted contents of all the given files with line count for head command", function() {
+    const input = {
+      fs,
+      fetchContents: getLines,
+      count: 2,
+      files,
+      command: "head"
+    };
     const expectedOutput = "==> ../file <==\n1\n2\n==> ../file <==\n1\n2";
-    assert.deepEqual(
-      runCommand(fs, getLines, 2, files, "head"),
-      expectedOutput
-    );
+    assert.deepEqual(runCommand(input), expectedOutput);
   });
-  it("should return the formatted contents of all the given files with character count for tail command", function() {
+  it("should return the formatted contents of all the given files with character count for head command", function() {
+    const input = {
+      fs,
+      fetchContents: getCharacters,
+      count: 3,
+      files,
+      command: "head"
+    };
     let expectedOutput = "==> ../file <==\n1\n2\n==> ../file <==\n1\n2";
-    assert.deepEqual(
-      runCommand(fs, getCharacters, 3, files, "head"),
-      expectedOutput
-    );
+    assert.deepEqual(runCommand(input), expectedOutput);
   });
 });
 

@@ -17,8 +17,8 @@ const addHeader = function(header, contents) {
 const extractDetails = function(inputs) {
   let { option, count, files } = parseInput(inputs);
   let func = { "-c": getCharacters, "-n": getLines };
-  let mapper = func[option];
-  return { files, count, mapper };
+  let fetchContents = func[option];
+  return { files, count, fetchContents };
 };
 
 const removeHeader = function(contents) {
@@ -54,13 +54,8 @@ const getContent = function(filePath, fs) {
   return contents;
 };
 
-const getRequiredContent = function(
-  command,
-  fs,
-  fetchContents,
-  count,
-  filePath
-) {
+const getRequiredContent = function(details) {
+  let { command, fs, fetchContents, count, filePath } = details;
   let formattedContents = `${command}: ${filePath}: No such file or directory`;
   if (fs.existsSync(filePath)) {
     let contents = getContent(filePath, fs);
@@ -75,21 +70,17 @@ const getRequiredContent = function(
 };
 
 const filterContent = function(fs, fetchContents, count, command, filePath) {
-  let formattedContents = getRequiredContent(
-    command,
-    fs,
-    fetchContents,
-    count,
-    filePath
-  );
+  let details = { command, fs, fetchContents, count, filePath };
+  let formattedContents = getRequiredContent(details);
   if (fs.existsSync(filePath))
     formattedContents = addHeader(filePath, formattedContents);
 
   return formattedContents;
 };
 
-const runCommand = function(fs, mapper, count, files, command) {
-  let callback = filterContent.bind(null, fs, mapper, count, command);
+const runCommand = function(details) {
+  let { fs, fetchContents, count, files, command } = details;
+  let callback = filterContent.bind(null, fs, fetchContents, count, command);
   return files.map(callback).join("\n");
 };
 
@@ -97,8 +88,9 @@ const head = function(inputs, fs) {
   let { errorState, message } = validateInput(inputs);
   if (errorState) return message;
 
-  let { files, count, mapper } = extractDetails(inputs);
-  let contents = runCommand(fs, mapper, count, files, "head");
+  let { files, count, fetchContents } = extractDetails(inputs);
+  let details = { fs, fetchContents, count, files, command: "head" };
+  let contents = runCommand(details);
 
   if (files.length > 1) return contents;
 
@@ -109,18 +101,19 @@ const head = function(inputs, fs) {
 };
 
 const tail = function(inputs, fs) {
-  let { files, count, mapper } = extractDetails(inputs);
-  let finalContents = runCommand(fs, mapper, count, files, "tail");
+  let { files, count, fetchContents } = extractDetails(inputs);
+  let details = { fs, fetchContents, count, files, command: "tail" };
+  let contents = runCommand(details);
 
   if (!isNumber(count)) {
     return `tail: illegal offset -- ${count}`;
   }
-  if (files.length > 1) return finalContents;
+  if (files.length > 1) return contents;
 
   if (fs.existsSync(files[0])) {
-    finalContents = removeHeader(finalContents);
+    contents = removeHeader(contents);
   }
-  return finalContents;
+  return contents;
 };
 
 module.exports = {
