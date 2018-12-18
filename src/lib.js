@@ -1,4 +1,4 @@
-const { parseInput } = require("./inputParser");
+const { parseInput } = require("./parser.js");
 const { validateInput } = require("./inputValidator");
 
 const getCharacters = function(contents, endIndex, initIndex = 0) {
