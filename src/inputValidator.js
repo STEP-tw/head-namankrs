@@ -1,4 +1,4 @@
-const isCountInvalid = x => x === "-0";
+const isCountZero = x => x === "-0";
 
 const lacksOption = x => !x.includes("-c") && !x.includes("-n");
 
@@ -10,7 +10,7 @@ const isAlphabetOrZero = x => isNaN(x.slice(2)) || x.slice(2) === "0";
 
 const isValidOption = x => x.slice(0, 2) === "-n" || x.slice(0, 2) === "-c";
 
-const isCountZero = x => isAlphabetOrZero(x) && isValidOption(x);
+const isCountInvalid = x => isAlphabetOrZero(x) && isValidOption(x);
 
 const hasOption = x => x === "-n" || x === "-c";
 
@@ -18,7 +18,7 @@ const hasInvalidCount = x => x < 1 || isNaN(x);
 
 const isCountAlphanumeric = (x, y) => hasOption(x) && hasInvalidCount(y);
 
-const invalidCountError = function() {
+const zeroCountError = function() {
   return { message: "head: illegal line count -- 0", errorState: true };
 };
 
@@ -30,7 +30,7 @@ usage: head [-n lines | -c bytes] [file ...]`,
   };
 };
 
-const countZeroError = function(input) {
+const invalidCountError = function(input) {
   let option = { "-n": "line", "-c": "byte" };
   return {
     message: `head: illegal ${option[input.slice(0, 2)]} count -- ${input.slice(
@@ -52,15 +52,15 @@ const validateInput = function(input) {
   let errorState = false;
   let message = "";
 
-  if (isCountInvalid(input[0])) {
-    return invalidCountError();
+  if (isCountZero(input[0])) {
+    return zeroCountError();
   }
 
   if (isOptionInvalid(input[0])) {
     return invalidOptionError(input[0]);
   }
-  if (isCountZero(input[0])) {
-    return countZeroError(input[0]);
+  if (isCountInvalid(input[0])) {
+    return invalidCountError(input[0]);
   }
 
   if (isCountAlphanumeric(input[0], input[1])) {
