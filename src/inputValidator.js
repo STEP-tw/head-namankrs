@@ -8,7 +8,6 @@ const isOptionInvalid = x => lacksOption(x) && isAlphanumeric(x);
 
 const isAlphabetOrZero = x => isNaN(x.slice(2)) || x.slice(2) === "0";
 
-//const isValidOption = x => x.slice(0, 2) === "-n" || x.slice(0, 2) === "-c";
 const hasOption = x => x === "-n" || x === "-c";
 
 const isCountInvalid = x => isAlphabetOrZero(x) && hasOption(x.slice(0, 2));
