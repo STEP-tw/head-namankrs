@@ -1,13 +1,14 @@
 {
-  "name": "head-namankrs",
+  "name": "head",
   "version": "1.0.0",
-  "description": "```node ./head.js file1   node ./head.js -n5 file1   node ./head.js -n 5 file1   node ./head.js -5 file1   node ./head.js file1 file2   node ./head.js -n 5 file1 file2   node ./head.js -n5 file1 file2   node ./head.js -5 file1 file2    node ./head.js -c5 file1   node ./head.js -c 5 file1   node ./head.js -c5 file1 file2   node ./head.js -c 5 file1 file2   ```",
+  "description": "fileUtil commands",
   "main": "head.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "format": "prettier ./src/*.js ./test/*.js"
   },
   "repository": {
     "type": "git",
@@ -24,5 +25,8 @@
   "homepage": "https://github.com/STEP-tw/head-namankrs#readme",
   "devDependencies": {
     "mocha": "^5.2.0"
+  },
+  "dependencies": {
+    "prettier": "^1.15.3"
   }
 }
