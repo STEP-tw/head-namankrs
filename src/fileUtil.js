@@ -17,7 +17,7 @@ const addHeader = function(header, contents) {
   return `==> ${header} <==\n${contents}`;
 };
 
-const extractDetails = function(inputs) {
+const getParsedInputs = function(inputs) {
   let { option, count, files } = parseInput(inputs);
   let func = { "-c": getCharacters, "-n": getLines };
   let fetchContents = func[option];
@@ -97,14 +97,14 @@ const finaliseContents = function(files, contents, fs) {
 const head = function(inputs, fs) {
   let { errorState, message } = validateHeadInput(inputs);
   if (errorState) return message;
-  let { files, count, fetchContents } = extractDetails(inputs);
+  let { files, count, fetchContents } = getParsedInputs(inputs);
   let details = { fs, fetchContents, count, files, command: "head" };
   let contents = runCommand(details);
   return finaliseContents(files, contents, fs);
 };
 
 const tail = function(inputs, fs) {
-  let { files, count, fetchContents, option } = extractDetails(inputs);
+  let { files, count, fetchContents, option } = getParsedInputs(inputs);
   let { errorState, message } = validateTailInput(count, option, fetchContents);
   if (errorState) return message;
   let details = { fs, fetchContents, count, files, command: "tail" };
