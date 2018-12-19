@@ -1,4 +1,7 @@
 const assert = require("assert");
+
+const { mockReader, mockValidator } = require("./util.js");
+
 const {
   getCharacters,
   getLines,
@@ -7,20 +10,6 @@ const {
   runCommand,
   tail
 } = require("../src/fileUtil.js");
-
-const mockReader = function(expectedFile, expectedContent) {
-  return function(actualFile) {
-    if (actualFile === expectedFile) {
-      return expectedContent;
-    }
-  };
-};
-
-const mockValidator = function(expectedFile) {
-  return function(actualFile) {
-    return actualFile === expectedFile;
-  };
-};
 
 describe("getCharacters", function() {
   it("should return an empty string when count is given as 0", function() {
