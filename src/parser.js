@@ -1,18 +1,14 @@
 const isOptionValid = x => x === "-n" || x === "-c";
 
-const isOption = x => x[0] === "-" && isNaN(x[1]);
-const isOptionAndCount = x => isOption(x) && x.length > 2;
+const isAlphanumeric = x => isNaN(x) && x[0] === "-";
+
+const isOptionAndCount = x => isAlphanumeric(x) && x.length > 2;
 
 const isCountValid = x => !isNaN(x);
 
-const parseOptionInput = function(inputs) {
-  return { option: inputs[0], count: inputs[1], files: inputs.slice(2) };
-};
 const isCountZero = x => x === "-0";
 
 const lacksOption = x => !x.includes("-c") && !x.includes("-n");
-
-const isAlphanumeric = x => isNaN(x) && x[0] === "-";
 
 const isOptionInvalid = x => lacksOption(x) && isAlphanumeric(x);
 
@@ -54,6 +50,10 @@ const alphanumericCountError = function(option, count) {
     message: `head: illegal ${types[option]} count -- ${count}`,
     errorState: true
   };
+};
+
+const parseOptionInput = function(inputs) {
+  return { option: inputs[0], count: inputs[1], files: inputs.slice(2) };
 };
 
 const parseOptionAndCountInput = function(inputs) {
