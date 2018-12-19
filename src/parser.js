@@ -6,17 +6,17 @@ const isCountValid = x => !isNaN(x);
 
 const isCountZero = x => x === "-0";
 
-const lacksOption = x => !x.includes("-c") && !x.includes("-n");
-
-const isOptionInvalid = x => lacksOption(x) && isAlphanumeric(x);
-
 const isAlphabetOrZero = x => isNaN(x.slice(2)) || x.slice(2) === "0";
 
 const hasOption = x => x === "-n" || x === "-c";
 
+const hasInvalidCount = x => x < 1 || isNaN(x);
+
 const isCountInvalid = x => isAlphabetOrZero(x) && hasOption(x.slice(0, 2));
 
-const hasInvalidCount = x => x < 1 || isNaN(x);
+const lacksOption = x => !x.includes("-c") && !x.includes("-n");
+
+const isOptionInvalid = x => lacksOption(x) && isAlphanumeric(x);
 
 const isCountAlphanumeric = (x, y) => hasOption(x) && hasInvalidCount(y);
 
@@ -81,6 +81,7 @@ const validateInput = function(input) {
   if (isOptionInvalid(input[0])) {
     return invalidOptionError(input[0]);
   }
+
   if (isCountInvalid(input[0])) {
     return invalidCountError(input[0]);
   }
