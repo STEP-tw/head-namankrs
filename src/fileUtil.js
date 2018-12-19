@@ -30,8 +30,6 @@ const removeHeader = function(contents) {
   return trimmedContents.join("\n");
 };
 
-const isNumber = x => !isNaN(x);
-
 const trimLastLine = function(contents) {
   contents = contents.split("\n");
   contents.pop();
@@ -99,7 +97,6 @@ const finaliseContents = function(files, contents, fs) {
 const head = function(inputs, fs) {
   let { errorState, message } = validateHeadInput(inputs);
   if (errorState) return message;
-
   let { files, count, fetchContents } = extractDetails(inputs);
   let details = { fs, fetchContents, count, files, command: "head" };
   let contents = runCommand(details);
