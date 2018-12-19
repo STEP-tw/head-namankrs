@@ -36,7 +36,7 @@ const trimLastLine = function(contents) {
   return contents.join("\n");
 };
 
-const getCounts = function(contents, mapper, count) {
+const getRange = function(contents, mapper, count) {
   let endIndex = contents.length;
   let initIndex = endIndex - count;
   if (mapper === getLines) {
@@ -60,7 +60,7 @@ const getRequiredContent = function(details) {
   let formattedContents = `${command}: ${filePath}: No such file or directory`;
   if (fs.existsSync(filePath)) {
     let contents = getContent(filePath, fs);
-    let { endIndex, initIndex } = getCounts(contents, fetchContents, count);
+    let { endIndex, initIndex } = getRange(contents, fetchContents, count);
     const commands = {
       head: fetchContents(contents, count),
       tail: fetchContents(contents, endIndex, initIndex)
