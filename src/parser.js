@@ -1,8 +1,8 @@
+const isNumber = x => !isNaN(x);
+
 const isAlphanumeric = x => isNaN(x) && x[0] === "-";
 
 const isOptionAndCount = x => isAlphanumeric(x) && x.length > 2;
-
-const isCountValid = x => !isNaN(x);
 
 const isCountZero = x => x === "-0";
 
@@ -92,6 +92,20 @@ const validateHeadInput = function(input) {
   return { errorState, message };
 };
 
+const validateTailInput = function(count, option, fetchContents) {
+  if (!isNumber(count)) {
+    return { message: `tail: illegal offset -- ${count}`, errorState: true };
+  }
+  if (!fetchContents) {
+    return {
+      message: `tail: illegal option -- ${option[1]}
+usage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]`,
+      errorState: true
+    };
+  }
+  return { message: "", errorState: false };
+};
+
 const parseInput = function(inputs) {
   let states = { option: "-n", count: "10", files: inputs.slice() };
 
@@ -103,10 +117,14 @@ const parseInput = function(inputs) {
     return parseOptionAndCountInput(inputs);
   }
 
-  if (isCountValid(inputs[0])) {
+  if (isNumber(inputs[0])) {
     return parseCountInput(inputs);
   }
   return states;
 };
 
-module.exports = { parseInput, validateHeadInput };
+module.exports = {
+  parseInput,
+  validateHeadInput,
+  validateTailInput
+};

@@ -1,4 +1,8 @@
-const { parseInput, validateHeadInput } = require("./parser.js");
+const {
+  parseInput,
+  validateHeadInput,
+  validateTailInput
+} = require("./parser.js");
 
 const getCharacters = function(contents, endIndex, initIndex = 0) {
   return contents.slice(initIndex, endIndex);
@@ -104,13 +108,8 @@ const head = function(inputs, fs) {
 
 const tail = function(inputs, fs) {
   let { files, count, fetchContents, option } = extractDetails(inputs);
-  if (!isNumber(count)) {
-    return `tail: illegal offset -- ${count}`;
-  }
-  if (!fetchContents) {
-    return `tail: illegal option -- ${option[1]}
-usage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]`;
-  }
+  let { errorState, message } = validateTailInput(count, option, fetchContents);
+  if (errorState) return message;
   let details = { fs, fetchContents, count, files, command: "tail" };
   let contents = runCommand(details);
 
