@@ -46,7 +46,7 @@ describe("head", function() {
   const readFileSync = mockReader("../file", fileContents);
   const existsSync = mockValidator("../file");
   let fs = { readFileSync, existsSync };
-  it("should return 1 lines of text when option is -n and count is 1", function() {
+  it("should return 1 line of text when option is -n and count is 1", function() {
     assert.deepEqual(head(["-n", "1", "../file"], fs), 1);
   });
   it("should return the contents seperated with header for two files", function() {
