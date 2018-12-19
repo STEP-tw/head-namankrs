@@ -18,7 +18,8 @@ const lacksOption = x => !x.includes("-c") && !x.includes("-n");
 
 const isOptionInvalid = x => lacksOption(x) && isAlphanumeric(x);
 
-const isCountAlphanumeric = (x, y) => hasOption(x) && hasInvalidCount(y);
+const isOptionWithAlphanumericCount = (x, y) =>
+  hasOption(x) && hasInvalidCount(y);
 
 const zeroCountError = function() {
   return { message: "head: illegal line count -- 0", errorState: true };
@@ -86,7 +87,7 @@ const validateHeadInput = function(input) {
     return invalidCountError(input[0]);
   }
 
-  if (isCountAlphanumeric(input[0], input[1])) {
+  if (isOptionWithAlphanumericCount(input[0], input[1])) {
     return alphanumericCountError(input[0], input[1]);
   }
   return { errorState, message };
