@@ -1,5 +1,4 @@
-const { parseInput } = require("./parser.js");
-const { validateInput } = require("./inputValidator");
+const { parseInput, validateInput } = require("./parser.js");
 
 const getCharacters = function(contents, endIndex, initIndex = 0) {
   return contents.slice(initIndex, endIndex);
@@ -18,7 +17,7 @@ const extractDetails = function(inputs) {
   let { option, count, files } = parseInput(inputs);
   let func = { "-c": getCharacters, "-n": getLines };
   let fetchContents = func[option];
-  return { files, count, fetchContents };
+  return { files, count, fetchContents, option };
 };
 
 const removeHeader = function(contents) {
@@ -104,13 +103,17 @@ const head = function(inputs, fs) {
 };
 
 const tail = function(inputs, fs) {
-  let { files, count, fetchContents } = extractDetails(inputs);
-  let details = { fs, fetchContents, count, files, command: "tail" };
-  let contents = runCommand(details);
-
+  let { files, count, fetchContents, option } = extractDetails(inputs);
   if (!isNumber(count)) {
     return `tail: illegal offset -- ${count}`;
   }
+  if (!fetchContents) {
+    return `tail: illegal option -- ${option[1]}
+usage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]`;
+  }
+  let details = { fs, fetchContents, count, files, command: "tail" };
+  let contents = runCommand(details);
+
   return finaliseContents(files, contents, fs);
 };
 
