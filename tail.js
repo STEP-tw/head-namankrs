@@ -1,5 +1,5 @@
 const fs = require("fs");
-const { tail } = require("./src/lib.js");
+const { tail } = require("./src/fileUtil.js");
 
 const main = function() {
   const inputs = process.argv;

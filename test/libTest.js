@@ -6,7 +6,7 @@ const {
   filterContent,
   runCommand,
   tail
-} = require("../src/lib.js");
+} = require("../src/fileUtil.js");
 
 const mockReader = function(expectedFile, expectedContent) {
   return function(actualFile) {
