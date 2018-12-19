@@ -1,5 +1,3 @@
-const isOptionValid = x => x === "-n" || x === "-c";
-
 const isAlphanumeric = x => isNaN(x) && x[0] === "-";
 
 const isOptionAndCount = x => isAlphanumeric(x) && x.length > 2;
@@ -96,7 +94,7 @@ const validateInput = function(input) {
 const parseInput = function(inputs) {
   let states = { option: "-n", count: "10", files: inputs.slice() };
 
-  if (isOptionValid(inputs[0])) {
+  if (hasOption(inputs[0])) {
     return parseOptionInput(inputs);
   }
 
