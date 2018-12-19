@@ -2,7 +2,7 @@ const {
   parseInput,
   validateHeadInput,
   validateTailInput
-} = require("./parser.js");
+} = require("./processInput.js");
 
 const getCharacters = function(contents, endIndex, initIndex = 0) {
   return contents.slice(initIndex, endIndex);
