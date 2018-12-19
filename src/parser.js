@@ -92,16 +92,24 @@ const validateHeadInput = function(input) {
   return { errorState, message };
 };
 
+const illegalOptionError = function(option) {
+  return {
+    message: `tail: illegal option -- ${option}
+usage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]`,
+    errorState: true
+  };
+};
+
+const illegalOffsetError = function(count) {
+  return { message: `tail: illegal offset -- ${count}`, errorState: true };
+};
+
 const validateTailInput = function(count, option, fetchContents) {
   if (!isNumber(count)) {
-    return { message: `tail: illegal offset -- ${count}`, errorState: true };
+    return illegalOffsetError(count);
   }
   if (!fetchContents) {
-    return {
-      message: `tail: illegal option -- ${option[1]}
-usage: tail [-F | -f | -r] [-q] [-b # | -c # | -n #] [file ...]`,
-      errorState: true
-    };
+    return illegalOptionError(option[1]);
   }
   return { message: "", errorState: false };
 };
