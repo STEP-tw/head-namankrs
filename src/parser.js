@@ -70,7 +70,7 @@ const parseCountInput = function(inputs) {
   };
 };
 
-const validateInput = function(input) {
+const validateHeadInput = function(input) {
   let errorState = false;
   let message = "";
 
@@ -109,4 +109,4 @@ const parseInput = function(inputs) {
   return states;
 };
 
-module.exports = { parseInput, validateInput };
+module.exports = { parseInput, validateHeadInput };

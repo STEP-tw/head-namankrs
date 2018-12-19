@@ -1,4 +1,4 @@
-const { parseInput, validateInput } = require("./parser.js");
+const { parseInput, validateHeadInput } = require("./parser.js");
 
 const getCharacters = function(contents, endIndex, initIndex = 0) {
   return contents.slice(initIndex, endIndex);
@@ -93,7 +93,7 @@ const finaliseContents = function(files, contents, fs) {
 };
 
 const head = function(inputs, fs) {
-  let { errorState, message } = validateInput(inputs);
+  let { errorState, message } = validateHeadInput(inputs);
   if (errorState) return message;
 
   let { files, count, fetchContents } = extractDetails(inputs);
