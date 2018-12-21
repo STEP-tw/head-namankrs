@@ -17,8 +17,8 @@ const addHeader = function(header, contents) {
   return `==> ${header} <==\n${contents}`;
 };
 
-const getParsedInputs = function(inputs) {
-  let { option, count, files } = parseInput(inputs);
+const getParsedInputs = function(userArgs) {
+  let { option, count, files } = parseInput(userArgs);
   let func = { "-c": getCharacters, "-n": getLines };
   let fetchContents = func[option];
   return { files, count, fetchContents, option };
@@ -94,17 +94,17 @@ const runCommand = function(details) {
   return files.map(callback).join("\n");
 };
 
-const head = function(inputs, fs) {
-  let { errorState, message } = validateHeadInput(inputs);
+const head = function(userArgs, fs) {
+  let { files, count, fetchContents } = getParsedInputs(userArgs);
+  let { errorState, message } = validateHeadInput(userArgs);
   if (errorState) return message;
-  let { files, count, fetchContents } = getParsedInputs(inputs);
   let details = { fs, fetchContents, count, files, command: "head" };
   let contents = runCommand(details);
   return finaliseContents(files, contents, fs);
 };
 
-const tail = function(inputs, fs) {
-  let { files, count, fetchContents, option } = getParsedInputs(inputs);
+const tail = function(userArgs, fs) {
+  let { files, count, fetchContents, option } = getParsedInputs(userArgs);
   let { errorState, message } = validateTailInput(count, option, fetchContents);
   if (errorState) return message;
   let details = { fs, fetchContents, count, files, command: "tail" };
