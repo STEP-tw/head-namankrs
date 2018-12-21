@@ -116,17 +116,18 @@ const validateTailInput = function(count, option, fetchContents) {
 };
 
 const parseInput = function(inputs) {
+  const possibleInputOrCount = inputs[0];
   let states = { option: "-n", count: "10", files: inputs.slice() };
 
-  if (hasOption(inputs[0])) {
+  if (hasOption(possibleInputOrCount)) {
     return parseOptionInput(inputs);
   }
 
-  if (isOptionAndCount(inputs[0])) {
+  if (isOptionAndCount(possibleInputOrCount)) {
     return parseOptionAndCountInput(inputs);
   }
 
-  if (isNumber(inputs[0])) {
+  if (isNumber(possibleInputOrCount)) {
     return parseCountInput(inputs);
   }
   return states;
