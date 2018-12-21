@@ -72,23 +72,24 @@ const parseCountInput = function(inputs) {
 };
 
 const validateHeadInput = function(input) {
+  const possibleOptionOrCount = input[0];
   let errorState = false;
   let message = "";
 
-  if (isCountZero(input[0])) {
+  if (isCountZero(possibleOptionOrCount)) {
     return zeroCountError();
   }
 
-  if (isOptionInvalid(input[0])) {
-    return invalidOptionError(input[0]);
+  if (isOptionInvalid(possibleOptionOrCount)) {
+    return invalidOptionError(possibleOptionOrCount);
   }
 
-  if (isCountInvalid(input[0])) {
-    return invalidCountError(input[0]);
+  if (isCountInvalid(possibleOptionOrCount)) {
+    return invalidCountError(possibleOptionOrCount);
   }
 
-  if (isOptionWithAlphanumericCount(input[0], input[1])) {
-    return alphanumericCountError(input[0], input[1]);
+  if (isOptionWithAlphanumericCount(possibleOptionOrCount, input[1])) {
+    return alphanumericCountError(possibleOptionOrCount, input[1]);
   }
   return { errorState, message };
 };
@@ -116,18 +117,18 @@ const validateTailInput = function(count, option, fetchContents) {
 };
 
 const parseInput = function(inputs) {
-  const possibleInputOrCount = inputs[0];
+  const possibleOptionOrCount = inputs[0];
   let states = { option: "-n", count: "10", files: inputs.slice() };
 
-  if (hasOption(possibleInputOrCount)) {
+  if (hasOption(possibleOptionOrCount)) {
     return parseOptionInput(inputs);
   }
 
-  if (isOptionAndCount(possibleInputOrCount)) {
+  if (isOptionAndCount(possibleOptionOrCount)) {
     return parseOptionAndCountInput(inputs);
   }
 
-  if (isNumber(possibleInputOrCount)) {
+  if (isNumber(possibleOptionOrCount)) {
     return parseCountInput(inputs);
   }
   return states;
