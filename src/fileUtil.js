@@ -79,12 +79,6 @@ const filterContent = function(fs, fetchContents, count, command, filePath) {
   return formattedContents;
 };
 
-const runCommand = function(details) {
-  let { fs, fetchContents, count, files, command } = details;
-  let callback = filterContent.bind(null, fs, fetchContents, count, command);
-  return files.map(callback).join("\n");
-};
-
 const finaliseContents = function(files, contents, fs) {
   if (files.length > 1) return contents;
 
@@ -92,6 +86,12 @@ const finaliseContents = function(files, contents, fs) {
     contents = removeHeader(contents);
   }
   return contents;
+};
+
+const runCommand = function(details) {
+  let { fs, fetchContents, count, files, command } = details;
+  let callback = filterContent.bind(null, fs, fetchContents, count, command);
+  return files.map(callback).join("\n");
 };
 
 const head = function(inputs, fs) {
